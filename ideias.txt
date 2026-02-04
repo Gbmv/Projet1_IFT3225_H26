@@ -1,0 +1,24 @@
+!!! APAGAR QUANDO TEMRINAR !!!
+
+QUALQUER DUVIDA COM BOOTSTRAP, VER NO W3SCHOOLS
+
+-> com bootstrap:
+
+pagina inicial:
+- usar navbar OK
+- usar dropdown OK
+- usar modal (pop up box) pra perguntar se usuario tem certeza que quer deletar conta
+- usar pagination pra mostrar qtd de tuiles: 
+    - usar .active pra highlightar a pagina presente (extra)
+- usar card pra mostrar os livros salvos
+    - .card class
+    - .card-body -> conteudo dentro
+
+pagina register:
+- ver form validation
+- usar alert pra mostrar que a conta foi criada, depois do usuario inserir infos
+- usar input groups (interessant)
+
+** INTERESSANTES **
+- floating labels
+
