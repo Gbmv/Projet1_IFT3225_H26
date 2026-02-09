@@ -22,3 +22,6 @@ pagina register:
 ** INTERESSANTES **
 - floating labels
 
+** Extras se der tempo **
+- Colocar forgot password and forgot email
+
