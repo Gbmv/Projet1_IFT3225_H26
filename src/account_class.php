@@ -1,5 +1,5 @@
 <?php
-// code inspiré par https://alexwebdevelop.com/user-authentication/
+ # code inspiré par exemples de code donné en cours: https://alexwebdevelop.com/user-authentication/
 
 class Account
 {
@@ -46,16 +46,16 @@ class Account
     }
 
     /* Adds a new account to the database and return it's ID */
-    public function addAccount(string $email, string $password, string $name): int
+    public function addAccount(string $email, string $pwd, string $name): int
     {
 
         // Global $pdo object
         global $pdo;
-        global $schema;
+        global $dbname;
 
         // trims strings to remove extra spaces
         $email = trim($email);
-        $password = trim($password);
+        $pwd = trim($pwd);
         $name = trim($name);
 
         /* Validation of user's infos */
@@ -64,7 +64,7 @@ class Account
             throw new Exception('Invalid email');
         }
         // checks if user's password is valid
-        if (!$this->isPasswordValid($password)) {
+        if (!$this->isPasswordValid($pwd)) {
             throw new Exception('Invalid password');
         }
 
@@ -76,13 +76,13 @@ class Account
         /*Adds new account */
 
         // creates insert query
-        $query = 'INSERT INTO' . $schema . ' accounts(account_name, account_email, account_password) VALUES (:name, :email:, :password)';
+        $query = 'INSERT INTO' . $dbname . ' accounts(account_name, account_email, account_password) VALUES (:name, :email:, :pwd)';
 
         // hash the password for user's protection
-        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $hash = password_hash($pwd, PASSWORD_DEFAULT);
 
         // creates a 'values' array for PDO
-        $values = array(':email' => $email, ':password' => $hash);
+        $values = array(':email' => $email, ':pwd' => $hash);
 
         // executes the query
         try {
@@ -100,7 +100,7 @@ class Account
     public function deleteAccount(string $id): bool
     {
         global $pdo;
-        global $schema;
+        global $dbname;
 
         // verification of id (is it valid?) 
         if (!$this->isIdValid($id)) {
@@ -108,7 +108,7 @@ class Account
         }
 
         // query DELETE template
-        $query = 'DELETE FROM ' . $schema . '.accounts WHERE (account_id = :id)';
+        $query = 'DELETE FROM ' . $dbname . '.accounts WHERE (account_id = :id)';
 
         // values array for pdo
         $values = array(':id' => $id);
@@ -122,7 +122,7 @@ class Account
         }
 
         // delete the sessions related to that account
-        $query = 'DELETE FROM ' . $schema . '.account_sessions WHERE (account_id = :id)';
+        $query = 'DELETE FROM ' . $dbname . '.account_sessions WHERE (account_id = :id)';
 
         /* Values array for PDO */
         $values = array(':id' => $id);
@@ -138,29 +138,84 @@ class Account
     }
 
     /*Edits account */
-    public function editAccount() {}
+    public function editAccount(int $id, string $email, string $pwd) {
+        global $pdo;
+        global $dbname;
+        
+        $email = trim($email);
+        $pwd = trim($pwd);
+        
+        // verifies validity of the id
+        if (!$this->isIdValid($id))
+        {
+            throw new Exception('Invalid account ID');
+        }
+        
+        // verifies validity of the email
+        if (!$this->isEmailValid($email))
+        {
+            throw new Exception('Invalid email');
+        }
+        
+        // verifies validity of the password
+        if (!$this->isPasswordValid($pwd))
+        {
+            throw new Exception('Invalid password');
+        }
+        
+        // Check if an account having the same email already exists (except for this one). //
+        $idFromEmail = $this->getIdFromEmail($email);
+        
+        if (!is_null($idFromEmail) && ($idFromEmail != $id))
+        {
+            throw new Exception('User name already used');
+        }
+        
+        // Editing the account:
+
+        // Edit query template //
+        $query = 'UPDATE '.$dbname.'.accounts SET account_email = :email, account_password = :pwd';
+        
+        // hashes password
+        $hash = password_hash($pwd, PASSWORD_DEFAULT);
+      
+        // values array 
+        $values = array(':email' => $email, ':pwd' => $hash, ':id' => $id);
+        
+        /* Execute the query */
+        try
+        {
+            $res = $pdo->prepare($query);
+            $res->execute($values);
+        }
+        // throws exception if pdo exception
+        catch (PDOException $e)
+        {
+           throw new Exception('Database query error');
+        }
+    }
 
     /* Allows user to log in into his account, using his email and password*/
-    public function login(string $email, string $password): bool
+    public function login(string $email, string $pwd): bool
     {
         global $pdo;
-        global $schema;
+        global $dbname;
 
         // Trim the strings //
         $name = trim($email);
-        $password = trim($password);
+        $pwd = trim($pwd);
 
         // checks if email is valid, if not, doesn't authenticate
         if (!$this->isEmailValid($email)) {
             return FALSE;
         }
         // checks password
-        if (!$this->isPasswordValid($password)) {
+        if (!$this->isPasswordValid($pwd)) {
             return FALSE;
         }
 
         // selects account from in the db
-        $query = 'SELECT * FROM' . $schema . '.accounts WHERE (account_email = :email)';
+        $query = 'SELECT * FROM' . $dbname . '.accounts WHERE (account_email = :email)';
 
         // values array for PDO
         $values = array(':email' => $email);
@@ -178,7 +233,7 @@ class Account
 
         // if there's a result, we check if password matches (we use password_verify())
         if (is_array($row)) {
-            if (password_verify($password, $row['account_password'])) {
+            if (password_verify($pwd, $row['account_password'])) {
 
                 // if authentification succeeds:
                 $this->id = intval($row['account_id'], 10);
@@ -213,10 +268,10 @@ class Account
     }
 
     // checks for password validity
-    public function isPasswordValid(string $password): bool
+    public function isPasswordValid(string $pwd): bool
     {
         $valid = TRUE;
-        $len = strlen($password);
+        $len = strlen($pwd);
         // doesn't allow pwd smaller than 8 characters or larger than 16
         if (($len < 8) || ($len > 16)) {
             $valid = FALSE;
@@ -240,13 +295,13 @@ class Account
     {
 
         global $pdo;
-        global $schema;
+        global $dbname;
 
         // checks if session has been started
         if (session_status() == PHP_SESSION_ACTIVE) {
             // query: looks for current session id in the account_sessions table and make sure session's not older than 7 days 
             $query =
-                'SELECT * FROM ' . $schema . '.account_sessions, ' . $schema . '.accounts WHERE (account_sessions.session_id =: sid)' .
+                'SELECT * FROM ' . $dbname . '.account_sessions, ' . $dbname . '.accounts WHERE (account_sessions.session_id =: sid)' .
                 'AND (account_sessions.login_time >= (NOW() - INTERVAL 7 DAY)) AND (account_sessions.account_id = accounts.account_id)';
 
             // values array for pdo
@@ -280,7 +335,7 @@ class Account
     {
 
         global $pdo;
-        global $schema;
+        global $dbname;
 
         // if user's id is not found, do nothing
         if (is_null($this->id)) {
@@ -295,7 +350,7 @@ class Account
         // closes active session, if there's one, removing it form account sessions table
         if (session_status() ==  PHP_SESSION_ACTIVE) {
             // delete query
-            $query = 'DELET FROM ' . $schema . 'account_sessions WHERE (session_id = :sid)';
+            $query = 'DELET FROM ' . $dbname . 'account_sessions WHERE (session_id = :sid)';
 
             $values = array(':sid' => session_id());
 
@@ -313,7 +368,7 @@ class Account
     public function getIdFromEmail(string $email): ?int
     {
         global $pdo;
-        global $schema;
+        global $dbname;
 
         // check for validity of email again
         if (!$this->isEmailValid($email)) {
@@ -324,7 +379,7 @@ class Account
         $id = NULL;
 
         // searches id on the db
-        $query = 'SELECT account_id FROM ' . $schema . '.accounts WHERE (account_email = :email)';
+        $query = 'SELECT account_id FROM ' . $dbname . '.accounts WHERE (account_email = :email)';
         $values = array(':email' => $email);
 
         try {
@@ -343,12 +398,12 @@ class Account
     private function registerLoginSession()
     {
         global $pdo;
-        global $schema;
+        global $dbname;
 
         if (session_status() == PHP_SESSION_ACTIVE) {
 
             // Replace will insert new row with session id if it doesnt exist, or update row with the session id if it exists
-            $query = 'REPLACE INTO ' . $schema . '.account_sessions (session_id, account_id, login_time) VALUES (:sid, :accountId, NOW())';
+            $query = 'REPLACE INTO ' . $dbname . '.account_sessions (session_id, account_id, login_time) VALUES (:sid, :accountId, NOW())';
             $values = array(':sid' => session_id(), ':accountId' => $this->id);
 
             try {

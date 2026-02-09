@@ -1,4 +1,5 @@
 <?php 
+    #inspiration : w3schools : PHP
 
     /* Sanitizes all input */
 
