@@ -1,4 +1,4 @@
-<?php 
+<?php
 // code inspiré par https://alexwebdevelop.com/user-authentication/
 
 class Account
@@ -7,6 +7,8 @@ class Account
     private $id;
     // account's name (null if it's not in db)
     private $name;
+    // account's username (null if it's not in db)
+    private $username;
     // returns true if user is authenticated and false if it's not
     private $authenticated;
 
@@ -14,7 +16,8 @@ class Account
     /*Public class methods */
 
     // Constructor
-    public function __construct(Type $var = null) {
+    public function __construct()
+    {
         /* intializes the global variables to null */
         $this->id = NULL;
         $this->name = NULL;
@@ -22,32 +25,29 @@ class Account
         $this->authenticated = FALSE;
     }
     // Destructor
-    public function __destruct(){
-
-    }
+    public function __destruct() {}
 
     // Getter for $id 
-    public function getId() : ?string{
+    public function getId(): ?string
+    {
         return $this->id;
     }
 
-    /* Getter for $name */
-    public function getName() : ?string{
-        return $this->name;
-    }
-
     /* Getter for $username */
-    public function getUsername() : ?string{
+    public function getUsername(): ?string
+    {
         return $this->username;
     }
 
     /* Tell if user is authenticated, return true if yes, false if no */
-    public function isAuthenticated(): bool{
+    public function isAuthenticated(): bool
+    {
         return $this->authenticated;
     }
 
     /* Adds a new account to the database and return it's ID */
-    public function addAccount(string $name, string $password): int{
+    public function addAccount(string $username, string $password, string $name): int
+    {
 
         // Global $pdo object
         global $pdo;
@@ -60,16 +60,16 @@ class Account
 
         /* Validation of user's infos */
         // checks if user username is valid
-        if (!$this -> isUsernameValid($username)){
+        if (!$this->isUsernameValid($username)) {
             throw new Exception('Invalid username');
         }
         // checks if user's password is valid
-        if (!$this -> isPasswordValid($password)){
+        if (!$this->isPasswordValid($password)) {
             throw new Exception('Invalid password');
         }
 
         // if id from the username doesn't exist, throws exception
-        if (!is_null($this->getIdFromUsername($username))){
+        if (!is_null($this->getIdFromUsername($username))) {
             throw new Exception('Username not available');
         }
 
@@ -82,34 +82,33 @@ class Account
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
         // creates a 'values' array for PDO
-        $values = array(':name' => $name, ':password'=>$hash);
+        $values = array(':username' => $username, ':password' => $hash);
 
         // executes the query
         try {
-            $res = $pdo -> prepare($query);
-            $res -> execute($value);
-
+            $res = $pdo->prepare($query);
+            $res->execute($values);
         } catch (PDOException $e) {
             // throw standard exception in case of a PDO exception
             throw new Exception("Database query error");
-        } 
+        }
         // returns the new ID
         return $pdo->lastInsertId();
     }
 
     /* Deletes an account (selection by ID) */
-    public function deleteAccount(string $id): bool {
-
+    public function deleteAccount(string $id): bool
+    {
         global $pdo;
         global $schema;
 
         // verification of id (is it valid?) 
-        if (!$this->isIdValid($id)){
+        if (!$this->isIdValid($id)) {
             throw new Exception('Invalid account ID');
         }
 
         // query DELETE template
-        $query = 'DELETE FROM '. $schema . '.accounts WHERE (account_id =:id)';
+        $query = 'DELETE FROM ' . $schema . '.accounts WHERE (account_id = :id)';
 
         // values array for pdo
         $values = array(':id' => $id);
@@ -127,39 +126,36 @@ class Account
 
         /* Values array for PDO */
         $values = array(':id' => $id);
-        
+
         /* Execute the query */
-        try
-        {
+        try {
             $res = $pdo->prepare($query);
             $res->execute($values);
-        }
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
             throw new Exception('Database query error');
         }
         return true;
     }
 
     /*Edits account */
-    public function editAccount(){
-        
-    }
+    public function editAccount() {}
 
     /* Allows user to log in into his account, using his username and password*/
-    public function login(string $username, string $password) : bool {
+    public function login(string $username, string $password): bool
+    {
         global $pdo;
         global $schema;
 
         // Trim the strings //
-        $name = trim($name);
-        $passwd = trim($passwd);
+        $name = trim($username);
+        $passwd = trim($password);
 
         // checks if username is valid, if not, doesn't authenticate
-        if (!$this->isUsernameValid($username)){
+        if (!$this->isUsernameValid($username)) {
             return FALSE;
         }
         // checks password
-        if (!$this->isPasswordValid($password)){
+        if (!$this->isPasswordValid($password)) {
             return FALSE;
         }
 
@@ -167,32 +163,29 @@ class Account
         $query = 'SELECT * FROM' . $schema . '.accounts WHERE (account_username = :username)';
 
         // values array for PDO
-        $values = array(':name' => $name);
-        
+        $values = array(':username' => $username);
+
         // execute the query
-        try
-        {
+        try {
             $res = $pdo->prepare($query);
             $res->execute($values);
-        }
-        catch (PDOException $e)
-        {
-           // If there is a PDO exception, throw a standard exception
-           throw new Exception('Database query error');
+        } catch (PDOException $e) {
+            // If there is a PDO exception, throw a standard exception
+            throw new Exception('Database query error');
         }
 
         $row = $res->fetch(PDO::FETCH_ASSOC);
 
         // if there's a result, we check if password matches (we use password_verify())
-        if (is_array($row)){
-            if (password_verify($password, $row['account_password'])){
+        if (is_array($row)) {
+            if (password_verify($password, $row['account_password'])) {
 
                 // if authentification succeeds:
                 $this->id = intval($row['account_id'], 10);
                 $this->username = $username;
                 $this->name = $name;
                 $this->authenticated = TRUE;
-                
+
                 // register current login session in the db
                 $this->registerLoginSession();
 
@@ -205,59 +198,165 @@ class Account
     }
 
     // checks for username sanitization
-    public function isUsernameValid($string):bool{
+    public function isUsernameValid(string $username): bool
+    {
         $valid = TRUE;
-    
+
         // keeps the len of the username's string
         $len = strlen($username);
 
         // doesn't allow username smaller than 8 characters or larger than 16
-        if (($len < 8) || ($len > 16)){
+        if (($len < 8) || ($len > 16)) {
             $valid = FALSE;
         }
         return $valid;
     }
 
     // checks for password validity
-    public function isPasswordValid(string $password):bool{
+    public function isPasswordValid(string $password): bool
+    {
         $valid = TRUE;
         $len = strlen($password);
         // doesn't allow pwd smaller than 8 characters or larger than 16
-        if (($len < 8) || ($len > 16)){
+        if (($len < 8) || ($len > 16)) {
             $valid = FALSE;
         }
         return $valid;
     }
-    
+
     // checks for password validity
-    public function isIdValid(int $id):bool{
+    public function isIdValid(int $id): bool
+    {
         $valid = TRUE;
         // doesn't allow pwd smaller than 8 characters or larger than 16
-        if (($id < 1) || ($id > 1000)){
+        if (($id < 1) || ($id > 1000)) {
             $valid = FALSE;
         }
         return $valid;
     }
-    
+
     // Login using sessions
-    public function sessionLogin():bool {
-        
+    public function sessionLogin(): bool
+    {
+
         global $pdo;
         global $schema;
 
         // checks if session has been started
-        if (session_status() == PHP_SESSION_ACTIVE)
-        
-        // TERMINAR
-        
-            {}
+        if (session_status() == PHP_SESSION_ACTIVE) {
+            // query: looks for current session id in the account_sessions table and make sure session's not older than 7 days 
+            $query =
+                'SELECT * FROM ' . $schema . '.account_sessions, ' . $schema . '.accounts WHERE (account_sessions.session_id =: sid)' .
+                'AND (account_sessions.login_time >= (NOW() - INTERVAL 7 DAY)) AND (account_sessions.account_id = accounts.account_id)';
+
+            // values array for pdo
+            $values = array(':sid' => session_id());
+
+            // executes the query
+            try {
+                $res = $pdo->prepare($query);
+                $res->execute($values);
+            } catch (PDOException $e) {
+                throw new Exception('Database query error');
+            }
+
+            $row = $res->fetch(PDO::FETCH_ASSOC);
+
+            if (is_array($row)) {
+                // retrieves accounts name, id and authenticates it
+                $this->id = intval($row['account_id'], 10);
+                $this->name = $row['account_name'];
+                $this->authenticated = TRUE;
+
+                return TRUE;
+            }
+        }
+        // if authentification fails, return false
+        return FALSE;
     }
 
-    // gets id from user's name
-    public function getIdFromName(string $name): ?int {
-        
+    // Logs out current user
+    public function logout()
+    {
+
+        global $pdo;
+        global $schema;
+
+        // if user's id is not found, do nothing
+        if (is_null($this->id)) {
+            return;
+        }
+
+        // reset account related properties
+        $this->id = NULL;
+        $this->name = NULL;
+        $this->authenticated = FALSE;
+
+        // closes active session, if there's one, removing it form account sessions table
+        if (session_status() ==  PHP_SESSION_ACTIVE) {
+            // delete query
+            $query = 'DELET FROM ' . $schema . 'account_sessions WHERE (session_id = :sid)';
+
+            $values = array(':sid' => session_id());
+
+            try {
+                // executes query
+                $res = $pdo->prepare($query);
+                $res->execute($values);
+            } catch (PDOException $e) {
+                throw new Exception('DB query error');
+            }
+        }
     }
 
+    // returns account id from user's $name, or NULL if not found
+    public function getIdFromUsername(string $username): ?int
+    {
+        global $pdo;
+        global $schema;
+
+        // check for validity of username again
+        if (!$this->isUsernameValid($username)) {
+            throw new Exception('Invalid username');
+        }
+
+        // initializes return value as null (in case no account is found)
+        $id = NULL;
+
+        // searches id on the db
+        $query = 'SELECT account_id FROM ' . $schema . '.accounts WHERE (account_username = :username)';
+        $values = array(':username' => $username);
+
+        try {
+            $res = $pdo->prepare($query);
+            $res->execute($values);
+        } catch (Exception $e) {
+            throw new Exception("Database query error");
+        }
+
+        return $id;
+    }
+
+    // private method:
+
+    // Saves the current session id with the account id
+    private function registerLoginSession()
+    {
+        global $pdo;
+        global $schema;
+
+        if (session_status() == PHP_SESSION_ACTIVE) {
+
+            // Replace will insert new row with session id if it doesnt exist, or update row with the session id if it exists
+            $query = 'REPLACE INTO ' . $schema . '.account_sessions (session_id, account_id, login_time) VALUES (:sid, :accountId, NOW())';
+            $values = array(':sid' => session_id(), ':accountId' => $this->id);
+
+            try {
+                $res = $pdo->prepare($query);
+                $res->execute($values);                        
+            } catch(PDOException $e){
+                    throw new Exception("Database query error");
+            }
+        }
+    }
 }
-
-?>
