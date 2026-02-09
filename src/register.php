@@ -24,6 +24,7 @@
         <!--Formulaire d'inscription-->
         <form method="POST" action="data_processing.php">
             <div class = "m-3">
+                <!-- Email input -->
                 <label for = "email" class ="form-label">E-mail</label>
                 <input type="email" class="form-control" placeholder="Enter your email" required>
             </div>
@@ -32,24 +33,21 @@
                 <label for = "email" class ="form-label">Confirm your E-mail</label>
                 <input type="email" class="form-control" placeholder="Enter your email" required>
             </div>
-
+            <!-- Password input -->
             <div class = "m-3">
                 <label for = "password" class = "form-label">Password</label>
                 <input type="password" class="form-control" placeholder="Enter your password" required>
             </div>
-
              <!-- Clicking on this button will submit the form -->
             <div class = "m-3">
                 <button type="submit" name="ok">Create account</button>
             </div>
 
+            <!-- Redirects user to login page, if they have an existing account -->
              <div class="text center m-3">
                 <a role="button" href="login.php">Already have an account? Click here</a>
             </div>
-        
-            </form>
-        
-
+        </form>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
