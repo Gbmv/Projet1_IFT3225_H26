@@ -7,8 +7,8 @@ class Account
     private $id;
     // account's name (null if it's not in db)
     private $name;
-    // account's username (null if it's not in db)
-    private $username;
+    // account's email (null if it's not in db)
+    private $email;
     // returns true if user is authenticated and false if it's not
     private $authenticated;
 
@@ -21,7 +21,7 @@ class Account
         /* intializes the global variables to null */
         $this->id = NULL;
         $this->name = NULL;
-        $this->username = NULL;
+        $this->email = NULL;
         $this->authenticated = FALSE;
     }
     // Destructor
@@ -33,10 +33,10 @@ class Account
         return $this->id;
     }
 
-    /* Getter for $username */
-    public function getUsername(): ?string
+    /* Getter for $email */
+    public function getEmail(): ?string
     {
-        return $this->username;
+        return $this->email;
     }
 
     /* Tell if user is authenticated, return true if yes, false if no */
@@ -46,7 +46,7 @@ class Account
     }
 
     /* Adds a new account to the database and return it's ID */
-    public function addAccount(string $username, string $password, string $name): int
+    public function addAccount(string $email, string $password, string $name): int
     {
 
         // Global $pdo object
@@ -54,35 +54,35 @@ class Account
         global $schema;
 
         // trims strings to remove extra spaces
-        $username = trim($username);
+        $email = trim($email);
         $password = trim($password);
         $name = trim($name);
 
         /* Validation of user's infos */
-        // checks if user username is valid
-        if (!$this->isUsernameValid($username)) {
-            throw new Exception('Invalid username');
+        // checks if user email is valid
+        if (!$this->isEmailValid($email)) {
+            throw new Exception('Invalid email');
         }
         // checks if user's password is valid
         if (!$this->isPasswordValid($password)) {
             throw new Exception('Invalid password');
         }
 
-        // if id from the username doesn't exist, throws exception
-        if (!is_null($this->getIdFromUsername($username))) {
-            throw new Exception('Username not available');
+        // if id from the email doesn't exist, throws exception
+        if (!is_null($this->getIdFromEmail($email))) {
+            throw new Exception("There's already an account with this email");
         }
 
         /*Adds new account */
 
         // creates insert query
-        $query = 'INSERT INTO' . ' accounts(account_name, account_username, account_password) VALUES (:name, :username:, :password';
+        $query = 'INSERT INTO' . $schema . ' accounts(account_name, account_email, account_password) VALUES (:name, :email:, :password)';
 
         // hash the password for user's protection
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
         // creates a 'values' array for PDO
-        $values = array(':username' => $username, ':password' => $hash);
+        $values = array(':email' => $email, ':password' => $hash);
 
         // executes the query
         try {
@@ -140,18 +140,18 @@ class Account
     /*Edits account */
     public function editAccount() {}
 
-    /* Allows user to log in into his account, using his username and password*/
-    public function login(string $username, string $password): bool
+    /* Allows user to log in into his account, using his email and password*/
+    public function login(string $email, string $password): bool
     {
         global $pdo;
         global $schema;
 
         // Trim the strings //
-        $name = trim($username);
-        $passwd = trim($password);
+        $name = trim($email);
+        $password = trim($password);
 
-        // checks if username is valid, if not, doesn't authenticate
-        if (!$this->isUsernameValid($username)) {
+        // checks if email is valid, if not, doesn't authenticate
+        if (!$this->isEmailValid($email)) {
             return FALSE;
         }
         // checks password
@@ -160,10 +160,10 @@ class Account
         }
 
         // selects account from in the db
-        $query = 'SELECT * FROM' . $schema . '.accounts WHERE (account_username = :username)';
+        $query = 'SELECT * FROM' . $schema . '.accounts WHERE (account_email = :email)';
 
         // values array for PDO
-        $values = array(':username' => $username);
+        $values = array(':email' => $email);
 
         // execute the query
         try {
@@ -182,7 +182,7 @@ class Account
 
                 // if authentification succeeds:
                 $this->id = intval($row['account_id'], 10);
-                $this->username = $username;
+                $this->email = $email;
                 $this->name = $name;
                 $this->authenticated = TRUE;
 
@@ -197,15 +197,15 @@ class Account
         return FALSE;
     }
 
-    // checks for username sanitization
-    public function isUsernameValid(string $username): bool
+    // checks for email sanitization
+    public function isEmailValid(string $email): bool
     {
         $valid = TRUE;
 
-        // keeps the len of the username's string
-        $len = strlen($username);
+        // keeps the len of the email's string
+        $len = strlen($email);
 
-        // doesn't allow username smaller than 8 characters or larger than 16
+        // doesn't allow email smaller than 8 characters or larger than 16
         if (($len < 8) || ($len > 16)) {
             $valid = FALSE;
         }
@@ -310,22 +310,22 @@ class Account
     }
 
     // returns account id from user's $name, or NULL if not found
-    public function getIdFromUsername(string $username): ?int
+    public function getIdFromEmail(string $email): ?int
     {
         global $pdo;
         global $schema;
 
-        // check for validity of username again
-        if (!$this->isUsernameValid($username)) {
-            throw new Exception('Invalid username');
+        // check for validity of email again
+        if (!$this->isEmailValid($email)) {
+            throw new Exception('Invalid email');
         }
 
         // initializes return value as null (in case no account is found)
         $id = NULL;
 
         // searches id on the db
-        $query = 'SELECT account_id FROM ' . $schema . '.accounts WHERE (account_username = :username)';
-        $values = array(':username' => $username);
+        $query = 'SELECT account_id FROM ' . $schema . '.accounts WHERE (account_email = :email)';
+        $values = array(':email' => $email);
 
         try {
             $res = $pdo->prepare($query);

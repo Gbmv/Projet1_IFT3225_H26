@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <!-- aqui colocamos o fluid container .container-fluid (full width of the page) (interessante pra uma barra fixa no topo)-->
+    <!-- navbar-->
     <nav class="navbar bg-light navbar-light sticky-top ">
         <div class="container-fluid">
             <!--logo -->
@@ -70,7 +70,7 @@
 
         exemplo:
     -->
-    <div class="container- row p-3" label="card-container">
+    <div class="container- row p-4 col-10 mx-auto" label="card-container" >
         <!-- one card -->
         <div class="card col">
             <div class="card-header">Name and author's name</div>

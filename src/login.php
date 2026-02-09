@@ -1,3 +1,11 @@
+<?php
+    // start the session
+    session_start();
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,7 +28,7 @@
     <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
         <div class= "card shadow-sm" style="width: 400px; width: 100%;">
             <div class="card-body p-4">
-                <h2 class = "text center mb-4">Sing-in</h2>
+                <h2 class = "text center mb-4">Sign in</h2>
     </div>
     
     <!--Formulaire de connexion-->            
@@ -35,9 +43,7 @@
             <input type="password" class="form-control" placeholder="Enter your password" required>
         </div>
 
-        <a class="d-block m-3" href="#">Forgot password?</a>
-
-        <div class= "dgrid btn sm " >
+        <div class= "dgrid btn sm">
             <button type="submit" class="btn btn-primary ">Login</button>
         </div> 
 
