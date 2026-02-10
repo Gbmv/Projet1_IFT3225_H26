@@ -19,27 +19,6 @@
                 <img src="images/logo.png" 
                 style="width:80px;" class="img-fluid" alt="logo">
             </a>
-            
-            <!-- adjusts dropdown menu, contains: delete account, modifify account -->
-             <ul class="navbar-nav ms-auto">
-                <li class="nav-item-dropdown">
-                    <!-- user adjustments icon -->
-                    <a class="nav-link p-4" href="#" role="button" data-bs-toggle="dropdown"
-                    ><img src="images/person-gear.svg" class="img-fluid"
-                    alt="user adjusts icon"
-                    style="width:40px">
-                    </a>
-                    <!-- dropdown menu -->
-                    <ul class="dropdown-menu list-unstyled">
-                        <li><a class="dropdown-item" href="#">Modify Account</a>
-                        </li>
-                        <li><a class="dropdown-item text-danger" href="#">Delete Account</a>
-                        </li>
-                        <li><a class="dropdown-item" href="#">Other</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
 
             <!-- toggler button shows/hides navbar features-->
             <button 
@@ -57,6 +36,14 @@
                     
                     <li class="nav-item">
                         <a class="nav-link" href="logout.php">Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item" href="edit_account.php">Modify Account</a>
+                    </li>
+                    <li>
+                        <a class="nav-item" href="delete_account.php">Delete Account</a>
+                    </li>
+                    <li><a class="dropdown-item" href="#">Other</a>
                     </li>
                 </ul>
             </div>
@@ -127,7 +114,6 @@
         <li class="page-item"><a class="page-link" href="#">3</a></li>
         <li class="page-item"><a class="page-link" href="#">Next</a></li>
     </ul>
-
     
     <!-- aqui colocamos um container normal .container -->
 

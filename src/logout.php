@@ -2,6 +2,7 @@
 <?php
     public function logout(){
         
+
         global $pdo; 
 
         // verifies if usr's id exist
@@ -9,8 +10,6 @@
             return;
         }
     }
-
-
 
 
 session_start();
