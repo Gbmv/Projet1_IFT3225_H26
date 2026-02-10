@@ -1,7 +1,34 @@
 <?php
     // start the session
     session_start();
+    
+    require "accounts_class.php";
 
+    $error = '';
+
+    // Verify if it was posted
+    if($SERVER ['REQUEST METHOD']=== POST){
+        $email = &_POST['email'] ?? '';
+        $password = &_POST['password'] ?? '';
+
+        try{
+            $account = new Account();
+        }
+
+        //Try login
+        if( $account-> login($email, $password)){
+            //Sucessful login, redirect to home page
+            header('Location: home.php');
+            exit();
+        }
+        else{
+            //Login failed, show error message
+            $error = 'Invalid email or password';
+        }
+        catch (Exception $e) {
+        $error = "Erro no sistema: " . $e->getMessage();
+        }
+        }
 
 ?>
 
@@ -35,12 +62,12 @@
     <form method = "POST">
         <div class = "m-3">
             <label for = "email" class ="form-label">E-mail</label>
-            <input type="email" class="form-control" placeholder="Enter your email" required>
+            <input type="email" name = "email" class="form-control" placeholder="Enter your email" required>
         </div>
 
         <div class = "m-3">
             <label for = "password" class = "form-label">Password</label>
-            <input type="password" class="form-control" placeholder="Enter your password" required>
+            <input type="password" name = "password" class="form-control" placeholder="Enter your password" required>
         </div>
 
         <div class= "dgrid btn sm">
