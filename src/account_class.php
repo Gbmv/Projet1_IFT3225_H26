@@ -1,6 +1,7 @@
 <?php
- # code inspiré par exemples de code donné en cours: https://alexwebdevelop.com/user-authentication/
+    include "db_inc.php";
 
+ # code inspiré par exemples de code donné en cours: https://alexwebdevelop.com/user-authentication/
 class Account
 {
     // account's ID (null if it's not in db)
@@ -261,8 +262,9 @@ class Account
         $len = strlen($email);
 
         // doesn't allow email smaller than 8 characters or larger than 16
-        if (($len < 8) || ($len > 16)) {
+        if (($len < 5) || ($len > 16)) {
             $valid = FALSE;
+            echo "Invalid email. Email length needs to be between 5 and 16 characaters";
         }
         return $valid;
     }
@@ -272,9 +274,10 @@ class Account
     {
         $valid = TRUE;
         $len = strlen($pwd);
-        // doesn't allow pwd smaller than 8 characters or larger than 16
-        if (($len < 8) || ($len > 16)) {
+        // doesn't allow pwd smaller than 1 character or larger than 16
+        if (($len < 1) || ($len > 16)) {
             $valid = FALSE;
+            echo "Invalid password. Email length needs to be between 1 and 16 characaters";
         }
         return $valid;
     }

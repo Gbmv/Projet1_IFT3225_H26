@@ -25,3 +25,7 @@ pagina register:
 ** Extras se der tempo **
 - Colocar forgot password and forgot email
 
+
+#a2836e
+#674d3c
+

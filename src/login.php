@@ -1,7 +1,7 @@
 <?php
     // start the session
     session_start();
-    
+    require "db_inc.php";
     require "accounts_class.php";
 
     $error = '';
@@ -13,10 +13,10 @@
 
         try{
             $account = new Account();
-        }
+        
 
         //Try login
-        if( $account-> login($email, $password)){
+        if ($account-> login($email, $password)){
             //Sucessful login, redirect to home page
             header('Location: home.php');
             exit();
@@ -24,11 +24,11 @@
         else{
             //Login failed, show error message
             $error = 'Invalid email or password';
-        }
+        }}
         catch (Exception $e) {
         $error = "Erro no sistema: " . $e->getMessage();
         }
-        }
+    }
 
 ?>
 
