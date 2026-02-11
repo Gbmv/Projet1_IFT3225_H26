@@ -80,12 +80,12 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                     </div>
 
                     <div class="d-grid mb-3">
-                        <button class="btn" style="background-color:ffcc5c" type="submit" name="ok" type="submit">Login</button>
+                        <button class="btn shadow-sm" style="background-color:ffcc5c" type="submit" name="ok" type="submit">Login</button>
                     </div>
 
 
                     <div class="text-center m-3">
-                        <a class="mb-3" role="button" href="../register.php">Don't have an account? Click here to register</a>
+                        <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover mb-3" role="button" href="../register.php">Don't have an account? Click here to register</a>
                     </div>
 
 

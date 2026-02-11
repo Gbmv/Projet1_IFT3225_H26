@@ -111,7 +111,7 @@
      <!--Logo-->
     <div class="container mt-5">
         <div class="d-flex flex-column align-items-center mb-4">
-            <img src="images/logo.png" alt="Logo" width="220" class="img-fluid mb-2">
+            <img src="images/logo.png" alt="Logo" width="220" class="img-fluid mb-2" style="">
             <h2 class="fw-bold">The Library</h2>
         </div>
     </div>
@@ -143,7 +143,7 @@
                 </div>
                 <!-- Clicking on this button will submit the form -->
                 <div class = "d-grid mb-3">
-                    <button class="btn" style="background-color:ffcc5c" type="submit" name="ok">Create account</button>
+                    <button class="btn shadow" style="background-color:ffcc5c" type="submit" name="ok">Create account</button>
                 </div>
 
                 <!-- Redirects user to login page, if they have an existing account -->

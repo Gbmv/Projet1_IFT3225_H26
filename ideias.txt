@@ -13,6 +13,10 @@ pagina inicial:
 - usar card pra mostrar os livros salvos
     - .card class
     - .card-body -> conteudo dentro
+    - usar a classe stretched-link em botões dentro de cards.
+        faz com que o card inteiro se torne clicável e mude levemente de cor ou sombra 
+        quando o mouse passa por cima, cria sensação de interatividade
+
 - usar BS filter pra filtrar conteudo dos tuiles
 
 pagina register:
