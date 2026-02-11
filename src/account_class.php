@@ -77,13 +77,13 @@ class Account
         /*Adds new account */
 
         // creates insert query
-        $query = 'INSERT INTO' . $dbname . ' accounts(account_name, account_email, account_password) VALUES (:name, :email:, :pwd)';
+        $query = 'INSERT INTO `' . $dbname . '`.accounts(account_name, account_email, account_pwd) VALUES (:name, :email, :pwd)';
 
         // hash the password for user's protection
         $hash = password_hash($pwd, PASSWORD_DEFAULT);
 
         // creates a 'values' array for PDO
-        $values = array(':email' => $email, ':pwd' => $hash);
+        $values = array(':name' => $name, ':email'=> $email, ':pwd'=> $hash);
 
         // executes the query
         try {
@@ -91,7 +91,7 @@ class Account
             $res->execute($values);
         } catch (PDOException $e) {
             // throw standard exception in case of a PDO exception
-            throw new Exception("Database query error");
+            throw new Exception("Database query error: " . $e->getMessage());
         }
         // returns the new ID
         return $pdo->lastInsertId();
@@ -109,7 +109,7 @@ class Account
         }
 
         // query DELETE template
-        $query = 'DELETE FROM ' . $dbname . '.accounts WHERE (account_id = :id)';
+        $query = 'DELETE FROM `' . $dbname . '`.accounts WHERE (account_id = :id)';
 
         // values array for pdo
         $values = array(':id' => $id);
@@ -119,11 +119,11 @@ class Account
             $res = $pdo->prepare($query);
             $res->execute($values);
         } catch (PDOException $e) {
-            throw new Exception('Database query error');
+            throw new Exception('Database query error: ' . $e->getMessage());
         }
 
         // delete the sessions related to that account
-        $query = 'DELETE FROM ' . $dbname . '.account_sessions WHERE (account_id = :id)';
+        $query = 'DELETE FROM `' . $dbname . '` .account_sessions WHERE (account_id = :id)';
 
         /* Values array for PDO */
         $values = array(':id' => $id);
@@ -133,13 +133,13 @@ class Account
             $res = $pdo->prepare($query);
             $res->execute($values);
         } catch (PDOException $e) {
-            throw new Exception('Database query error');
+            throw new Exception('Database query error: ' . $e->getMessage());
         }
         return true;
     }
 
     /*Edits account */
-    public function editAccount(int $id, string $email, string $pwd) {
+    public function editAccount(int $id, string $email, string $pwd, string $name) {
         global $pdo;
         global $dbname;
         
@@ -175,13 +175,13 @@ class Account
         // Editing the account:
 
         // Edit query template //
-        $query = 'UPDATE '.$dbname.'.accounts SET account_email = :email, account_password = :pwd';
+        $query = 'UPDATE `'. $dbname .'`.accounts SET account_email = :email, account_pwd = :pwd, account_name = :name';
         
         // hashes password
         $hash = password_hash($pwd, PASSWORD_DEFAULT);
       
         // values array 
-        $values = array(':email' => $email, ':pwd' => $hash, ':id' => $id);
+        $values = array(':name'=> $name, ':email' => $email, ':pwd' => $hash);
         
         /* Execute the query */
         try
@@ -192,7 +192,7 @@ class Account
         // throws exception if pdo exception
         catch (PDOException $e)
         {
-           throw new Exception('Database query error');
+           throw new Exception('Database query error: ' . $e->getMessage());
         }
     }
 
@@ -203,7 +203,7 @@ class Account
         global $dbname;
 
         // Trim the strings //
-        $name = trim($email);
+        $email = trim($email);
         $pwd = trim($pwd);
 
         // checks if email is valid, if not, doesn't authenticate
@@ -216,7 +216,7 @@ class Account
         }
 
         // selects account from in the db
-        $query = 'SELECT * FROM' . $dbname . '.accounts WHERE (account_email = :email)';
+        $query = 'SELECT * FROM `' . $dbname . '`.accounts WHERE (account_email = :email)';
 
         // values array for PDO
         $values = array(':email' => $email);
@@ -227,19 +227,18 @@ class Account
             $res->execute($values);
         } catch (PDOException $e) {
             // If there is a PDO exception, throw a standard exception
-            throw new Exception('Database query error');
+            throw new Exception('Database query error: ' . $e->getMessage());
         }
 
         $row = $res->fetch(PDO::FETCH_ASSOC);
 
         // if there's a result, we check if password matches (we use password_verify())
         if (is_array($row)) {
-            if (password_verify($pwd, $row['account_password'])) {
+            if (password_verify($pwd, $row['account_pwd'])) {
 
                 // if authentification succeeds:
                 $this->id = intval($row['account_id'], 10);
                 $this->email = $email;
-                $this->name = $name;
                 $this->authenticated = TRUE;
 
                 // register current login session in the db
@@ -304,7 +303,7 @@ class Account
         if (session_status() == PHP_SESSION_ACTIVE) {
             // query: looks for current session id in the account_sessions table and make sure session's not older than 7 days 
             $query =
-                'SELECT * FROM ' . $dbname . '.account_sessions, ' . $dbname . '.accounts WHERE (account_sessions.session_id =: sid)' .
+                'SELECT * FROM ' . $dbname . '.account_sessions, `' . $dbname . '`.accounts WHERE (account_sessions.session_id =: sid)' .
                 'AND (account_sessions.login_time >= (NOW() - INTERVAL 7 DAY)) AND (account_sessions.account_id = accounts.account_id)';
 
             // values array for pdo
@@ -315,7 +314,7 @@ class Account
                 $res = $pdo->prepare($query);
                 $res->execute($values);
             } catch (PDOException $e) {
-                throw new Exception('Database query error');
+                throw new Exception('Database query error: ' . $e->getMessage());
             }
 
             $row = $res->fetch(PDO::FETCH_ASSOC);
@@ -353,7 +352,7 @@ class Account
         // closes active session, if there's one, removing it form account sessions table
         if (session_status() ==  PHP_SESSION_ACTIVE) {
             // delete query
-            $query = 'DELET FROM ' . $dbname . 'account_sessions WHERE (session_id = :sid)';
+            $query = 'DELETE FROM `' . $dbname . '` account_sessions WHERE (session_id = :sid)';
 
             $values = array(':sid' => session_id());
 
@@ -362,12 +361,12 @@ class Account
                 $res = $pdo->prepare($query);
                 $res->execute($values);
             } catch (PDOException $e) {
-                throw new Exception('DB query error');
+                throw new Exception('DB query error: ' . $e->getMessage());
             }
         }
     }
 
-    // returns account id from user's $name, or NULL if not found
+    // returns account id from user's $email, or NULL if not found
     public function getIdFromEmail(string $email): ?int
     {
         global $pdo;
@@ -382,14 +381,22 @@ class Account
         $id = NULL;
 
         // searches id on the db
-        $query = 'SELECT account_id FROM ' . $dbname . '.accounts WHERE (account_email = :email)';
+        $query = 'SELECT account_id FROM `' . $dbname . '`.accounts WHERE (account_email = :email)';
         $values = array(':email' => $email);
 
         try {
             $res = $pdo->prepare($query);
             $res->execute($values);
-        } catch (Exception $e) {
-            throw new Exception("Database query error");
+        } catch (PDOException $e) {
+            throw new Exception("Database query error: " . $e->getMessage());
+        }
+
+        // fetches result from row found
+        $row = $res->fetch(PDO::FETCH_ASSOC);
+
+        // if the row exists, fetches id from it
+        if (is_array($row)){
+            $id = intval($row['account_id'], 10);
         }
 
         return $id;
@@ -404,16 +411,15 @@ class Account
         global $dbname;
 
         if (session_status() == PHP_SESSION_ACTIVE) {
-
             // Replace will insert new row with session id if it doesnt exist, or update row with the session id if it exists
-            $query = 'REPLACE INTO ' . $dbname . '.account_sessions (session_id, account_id, login_time) VALUES (:sid, :accountId, NOW())';
+            $query = 'REPLACE INTO `' . $dbname . '` .account_sessions (session_id, account_id, login_time) VALUES (:sid, :accountId, NOW())';
             $values = array(':sid' => session_id(), ':accountId' => $this->id);
 
             try {
                 $res = $pdo->prepare($query);
                 $res->execute($values);                        
             } catch(PDOException $e){
-                    throw new Exception("Database query error");
+                    throw new Exception("Database query error: " . $e->getMessage());
             }
         }
     }

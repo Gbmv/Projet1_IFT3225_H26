@@ -6,7 +6,7 @@
 
     session_start(); // starts session
 
-    $nameErr = $emailErr = $passwordErr = "";
+    $nameErr = $emailErr = $passwordErr = $msgErr = $success = $success_feedback = "";
 
     // define variables and set values to empty
     $name = $email = $password = ""; // define variables and set to empty values
@@ -17,12 +17,12 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // checks for input name errors, sends error message if so
         if (empty($_POST["name"])){
-            $nameErr = "Name required";
+            $nameErr = '<div class="alert alert-danger" role="alert">Name required</div>';
             $valid = false;
         } else {
             $name = clean($_POST["name"]);
             if (!preg_match("/^[a-zA-Z-']*$/", $name)){
-                $nameErr = "Only letters and white space allowed";
+                $nameErr = '<div class="alert alert-danger" role="alert">Only letters and white space allowed</div>';
                 $valid = false;
             } else {
                 $valid = true;
@@ -30,47 +30,60 @@
         }
         // checks for input email errors, sends error message if so
         if (empty($_POST["email"])){
-            $emailErr = "Email required";
+            $emailErr = '<div class="alert alert-danger" role="alert">Email required</div>';
             $valid = false;
         }
         else {
             $email = clean($_POST["email"]);
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)){
-                $emailErr = "Invalid email format";
+                $emailErr = '<div class="alert alert-danger" role="alert">Invalid email format</div>';
                 $valid = false;
             } else {
                 $valid = true;
-
             }
         }
         // checks if password was typed at all, sends error msg if not
         if (empty($_POST["password"])){
-            $passwordErr = "Password required";
+            $passwordErr = '<div class="alert alert-danger" role="alert">Password required</div>';
             $valid = false;
         } else {
             $password = clean($_POST["password"]);
             $valid = true;
         }
     }
-    /** AFTER sanitizing, use account methods to manipulate the data into the accounts table **/
+
+    /** AFTER sanitizing it, use account methods to manipulate the data into the accounts table **/
 
     if ($valid == true){
     // instantiates account class, all values are set null at first
         try {
             $account = new Account();
+
+            // adds new account to the accounts table with the submitted form data. stores account's id inside id
+            $account->addAccount($email, $password, $name);
+
+
+            $success = '<script>console.log("New account created.")</script>';
+
+            // gives feedback to user, indicating account was successfully created and pointing to login page
+            $success_feedback = 
+            '<div class="alert alert-sucess" role="alert">
+                <h4 class="alert-heading">Great news!</h4>
+                <p>Your account has been just created, $name</p>
+                <hr>
+                <p class="mb-0">Now head to to the login page below so you can access the website</p>
+                <a href="src/login.php">Sign in</a>
+            </div>';
+
+            // after account is created and added to the table, sends user back to login page to login into his account
+            /* if ($account) {
+                header("Location: src/login.php");
+            } */
         } catch(Exception $e){
-            echo $e->getMessage();
+            //
+            $msgErr = '<div class="alert alert-danger">' . $e->getMessage() . '</div>';
             die();
         } 
-        echo '<script>console.log("The new account ID is "' . $newId . ' );</script>;';
-
-        // adds new account to the accounts table with the submitted form data. stores account's id inside id
-        $account->addAccount($email, $password, $name);
-
-        // after account is created and added to the table, sends user back to login page to login into his account
-        if ($account) {
-            header("Location: src/login.php");
-        }
     }
 ?>
 
@@ -113,20 +126,19 @@
                 <div class = "form-floating m-3" style="width: 80%" >
                     <input type="name" class="form-control" name="name" placeholder="Enter your name" required>
                     <label for = "name" class ="form-label">Name</label>
-                    <span class="error"><?php echo $nameErr; ?></span>
+                    <?php echo $nameErr;?>
                 </div>
                 <!-- Email input -->
                 <div class = "form-floating m-3" style="width: 80%">
                     <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
-                    <label for = "email" class ="form-label">E-mail</label>
-                    <span class="error"><?php echo $emailErr; ?></span>
-
+                    <label for = "email" type="email" class ="form-label">E-mail</label>
+                    <?php echo $emailErr;?>
                 </div>
                 <!-- Password input -->
                 <div class = "form-floating m-3" style="width: 80%">
                     <input type="password" class="form-control" name="password" placeholder="Enter your password" required>
                     <label for = "password" class = "form-label">Password</label>
-                    <span class="error"><?php echo $passwordErr; ?></span>
+                    <?php echo $passwordErr;?>
                 </div>
                 <!-- Clicking on this button will submit the form -->
                 <div class = "m-3">
@@ -138,6 +150,13 @@
                     <a role="button" href="src/login.php">Already have an account? Click here</a>
                 </div>
             </form>
+            <div>
+                <?php
+                    echo $msgErr;
+                    echo $success;
+                    echo $success_feedback;
+                ?>
+            </div>
         </div>
     </div>
     <footer class="footer mt-auto py-4 border-top" style="background-color:#674d3c"><p></p></footer>
