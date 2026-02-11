@@ -13,6 +13,7 @@ pagina inicial:
 - usar card pra mostrar os livros salvos
     - .card class
     - .card-body -> conteudo dentro
+- usar BS filter pra filtrar conteudo dos tuiles
 
 pagina register:
 - ver form validation

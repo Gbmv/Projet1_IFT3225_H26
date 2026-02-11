@@ -67,12 +67,12 @@
 
             // gives feedback to user, indicating account was successfully created and pointing to login page
             $success_feedback = 
-            '<div class="alert alert-sucess" role="alert">
-                <h4 class="alert-heading">Great news!</h4>
-                <p>Your account has been just created, $name</p>
-                <hr>
-                <p class="mb-0">Now head to to the login page below so you can access the website</p>
-                <a href="src/login.php">Sign in</a>
+            '<div class="alert alert-sucess fade-in" role="alert">
+                <strong>Great news!</strong>
+                <br>
+                Your account has been just created, ' . $name . '.
+                <br>
+                <a href="src/login.php" class="alert-link">Sign in</a>
             </div>';
 
             // after account is created and added to the table, sends user back to login page to login into his account
@@ -93,6 +93,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <title>Registering space</title>
 </head>
 <body class="flex-column min-vh-100" style="background-color:#fff2df">
@@ -115,42 +117,42 @@
     </div>
     
     <!--Register box-->
-    <div class="container d-flex align-items-center justify-content-center rounded mb-5" style="width: 70%; min-height: 80vh;background-color:#a2836e">
-        <div class= "card shadow-m d-flex m-4" style="width:60%;">
-            <div class="card-body mx-auto p-4">
-                <h2 class = "text mb-4">Register</h2>
-            </div>
+    <div class="container d-flex flex-column align-items-center justify-content-center rounded mb-5" style="width: 50%; min-height: 80vh;background-color:#a2836e">
+        <div class= "card shadow m-4" style="width:70%;">
+            <div class="card-body p-4">
+                <h3 class = "text-center mb-4">Register</h3>
             <!--Formulaire d'inscription-->
-            <form method="POST" action="" class="needs-validation" novalidate>
+            <form method="POST" action="">
                 <!--Name input -->
-                <div class = "form-floating m-3" style="width: 80%" >
+                <div class = "form-floating mb-3" style="width: 100%">
                     <input type="name" class="form-control" name="name" placeholder="Enter your name" required>
                     <label for = "name" class ="form-label">Name</label>
                     <?php echo $nameErr;?>
                 </div>
                 <!-- Email input -->
-                <div class = "form-floating m-3" style="width: 80%">
+                <div class = "form-floating mb-3" style="width: 100%">
                     <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
                     <label for = "email" type="email" class ="form-label">E-mail</label>
                     <?php echo $emailErr;?>
                 </div>
                 <!-- Password input -->
-                <div class = "form-floating m-3" style="width: 80%">
+                <div class = "form-floating mb-3" style="width: 100%">
                     <input type="password" class="form-control" name="password" placeholder="Enter your password" required>
                     <label for = "password" class = "form-label">Password</label>
                     <?php echo $passwordErr;?>
                 </div>
                 <!-- Clicking on this button will submit the form -->
-                <div class = "m-3">
+                <div class = "d-grid mb-3">
                     <button class="btn" style="background-color:ffcc5c" type="submit" name="ok">Create account</button>
                 </div>
 
                 <!-- Redirects user to login page, if they have an existing account -->
-                <div class="text center m-3">
-                    <a role="button" href="src/login.php">Already have an account? Click here</a>
+                <div class="text-center m-3">
+                    <a class="mb-3" role="button" href="src/login.php">Already have an account? Click here</a>
                 </div>
             </form>
-            <div>
+            </div>
+            <div class="container">
                 <?php
                     echo $msgErr;
                     echo $success;
