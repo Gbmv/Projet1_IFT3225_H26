@@ -17,6 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
         //Try login
         if ($account->login($email, $password)) {
+            // 
+            $account->sessionLogin();
             //Sucessful login, redirect to home page
             header('Location: home.php');
             exit();
