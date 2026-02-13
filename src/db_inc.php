@@ -2,6 +2,7 @@
     $servername = "localhost";
     $username = "root";
     $dbname = "tp1-ift3225";
+    $password = "root";
 
     // PDO object
     $pdo = NULL;
@@ -9,7 +10,7 @@
     // tries to stablish connection to database, sends message to console to confirm it
     try {
         // PDO object creation
-        $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username);
+        $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
         // sets pdo error mode to exception
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         echo "<script>console.log('Connected successfully to database');</script>";

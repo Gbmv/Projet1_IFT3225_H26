@@ -13,6 +13,8 @@
     $newId = 0;
     $valid = false;
 
+    
+
     // sanitization of the data from the form
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // checks for input name errors, sends error message if so
@@ -62,7 +64,7 @@
             // adds new account to the accounts table with the submitted form data. stores account's id inside id
             $account->addAccount($email, $password, $name);
 
-
+            
             $success = '<script>console.log("New account created.")</script>';
 
             // gives feedback to user, indicating account was successfully created and pointing to login page
@@ -77,7 +79,7 @@
 
             // after account is created and added to the table, sends user back to login page to login into his account
             /* if ($account) {
-                header("Location: src/login.php");
+                header("Location:/login.php");
             } */
         } catch(Exception $e){
             //
@@ -148,7 +150,7 @@
 
                 <!-- Redirects user to login page, if they have an existing account -->
                 <div class="text-center m-3">
-                    <a class="mb-3" role="button" href="src/login.php">Already have an account? Click here</a>
+                    <a class="mb-3" role="button" href="login.php">Already have an account? Click here</a>
                 </div>
             </form>
             </div>

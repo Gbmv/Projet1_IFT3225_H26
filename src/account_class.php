@@ -261,9 +261,9 @@ class Account
         $len = strlen($email);
 
         // doesn't allow email smaller than 8 characters or larger than 16
-        if (($len < 5) || ($len > 16)) {
+        if (($len < 5) || ($len > 100)) {
             $valid = FALSE;
-            echo "Invalid email. Email length needs to be between 5 and 16 characaters";
+            echo "Invalid email. Email length needs to be between 5 and 100 characaters";
         }
         return $valid;
     }
