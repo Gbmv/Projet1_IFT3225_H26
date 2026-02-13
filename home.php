@@ -2,6 +2,9 @@
 
 <?php
 
+require "db_inc.php";
+require "book_class";
+
 session_start();
 
 // card template

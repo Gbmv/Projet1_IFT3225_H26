@@ -1,6 +1,6 @@
 <?php
     include "db_inc.php";
-
+    
  # code inspiré par exemples de code donné en cours: https://alexwebdevelop.com/user-authentication/
 class Account
 {
@@ -412,7 +412,7 @@ class Account
 
         if (session_status() == PHP_SESSION_ACTIVE) {
             // Replace will insert new row with session id if it doesnt exist, or update row with the session id if it exists
-            $query = 'REPLACE INTO `' . $dbname . '` .account_sessions (session_id, account_id, login_time) VALUES (:sid, :accountId, NOW())';
+            $query = 'REPLACE INTO `' . $dbname . '` .account_sessions(session_id, account_id, login_time) VALUES (:sid, :accountId, NOW())';
             $values = array(':sid' => session_id(), ':accountId' => $this->id);
 
             try {
