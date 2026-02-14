@@ -1,6 +1,6 @@
 <?php
-require "db_inc.php";
-require "account_class";
+include "db_inc.php";
+require "account_class.php";
 
 class Book
 {
@@ -43,7 +43,11 @@ class Book
         return $pdo->lastInsertId();
     }
 
-    // 
+    // Deletes book from user's library
+    public function deleteBook(){}
+
+
+    // create user's books cards and display them all
     public function displayBooks()
     {
         // global variables
@@ -69,7 +73,7 @@ class Book
 
         // execute loop to display books, while there are books being fetched from current user's book table
         while ($book = $res->fetch(PDO::FETCH_ASSOC)) {
-            $book_cards = <<<EOT
+            $book_cards .= <<<EOT
                 <div class="col-12 col-md-3">
                         <div class="card h-100" style="background-color:#5A3422;">
                             <div class="card-header text-center">
@@ -87,7 +91,7 @@ class Book
                             </div>  
                         </div>
                     </div>
-            EOT;
+EOT;
         }
 
         return $book_cards;
