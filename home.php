@@ -2,32 +2,29 @@
 
 <?php
 
-require "db_inc.php";
-require "book_class";
+require "src/db_inc.php";
+require "src/book_class.php";
 
 session_start();
 
-// card template
-$card =
-    '<div class="col-12 col-md-3">
-        <div class="card h-100" style="background-color:#5A3422;">
-            <div class="card-header text-center">
-                <h4 style="color:#C9A24D; font-family:Georgia, serif;">Book name</h4>
-            </div>
-            <img class="card-img-top" src="./images/book_bg_2.png" alt="Card image">
-            <div class="card-body">
-                <p style="color: #F3E7D3">Author name</p>
-            </div>
-            <div class="card-footer" style="border-top-color:#8C4F2C">
-                <button class="btn" type="button">
-                    <img src="./images/delete_icon.svg" class="img-fluid" style="width:30px;" alt="remove">
-                </button>
-            </div>  
-        </div>
-    </div>';
-
-// book card logic
-
+$card = '
+<div class="col-12 col-md-3">
+                        <div class="card h-100" style="background-color:#5A3422;">
+                            <div class="card-header text-center">
+                                <h4 style="color:#C9A24D; font-family:Georgia, serif;"> title </h4>
+                            </div>
+                            <img class="card-img-top" src="./images/book_bg_2.png" alt="Card image">
+                            <div class="card-body">
+                                <p style="color: #F3E7D3"> book </p>
+                                <h6 class="text-center"> category </h6>
+                            </div>
+                            <div class="card-footer" style="border-top-color:#8C4F2C">
+                                <button class="btn" type="button">
+                                    <img src="./images/delete_icon.svg" class="img-fluid" style="width:30px;" alt="remove">
+                                </button>
+                            </div>  
+                        </div>
+                    </div>'
 
 
 
@@ -133,12 +130,7 @@ $card =
         </div>
     </div>
 
-    <!-- Assim vamos fazer os cards (tuiles)
-        - Os cards vao ficar dentro de um container que vai organizá-los
-        - cada card é um div de tipo card e possui um div de tipo card-body
-
-        exemplo:
-    -->
+    <!-- Library: Grid of book tiles -->
     <div class="container my-5">
         <div class="row g-5 justify-content-center">
             <?php
@@ -150,29 +142,54 @@ $card =
             <!--Tile button: creates a new book card-->
             <div class="col-12 col-md-3 d-grid justify-content-center">
                 <!--Clicking the button will activate a modal containing the form-->
-                <button class="btn p-0 border-0 bg-transparent">
-                    <img class="card-img img-fluid" src="./images/plus_button2.png">
+                <button class="btn p-0 border-0 bg-transparent" type="button" data-bs-toggle="modal" data-bs-target="#add_book">
+                    <img class="card-img img-fluid" style="width:70%" src="./images/plus_button2.png">
                 </button>
             </div>
 
+            <!-- Modal: Add a book -->
             <div class="container">
                 <div class="modal fade" role="dialog" id="add_book">
                     <div class="modal-dialog modal-dialog-centered">
-                        <!--Modal-->
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Add a book</h5>
+                                <h5 class="modal-title" style="font-family:Georgia, serif">Add a book</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body text-center">
                                 <div class="form-floating mb-3 mt-3">
+                                    <!--Form contains book title, author and category-->
                                     <form method="POST" action="">
-                                        <input type="">Book name</input>
-                                        <input>Author</input>
+                                        <div class="form-floating mb-3 mt-3">
+                                            <input type="title" class="form-control" placeholder="Title" name="title" required>
+                                            <label for="title" class="form-label" style="font-family:Georgia, serif">Title</label>
+                                        </div>
+                                        <div class="form-floating mb-3 mt-3">
+                                            <input type="author" class="form-control" placeholder="Author" name="author" required>
+                                            <label for="author" class="form-label" style="font-family:Georgia, serif">Author</label>
+                                        </div>
+                                        <!--Categories menu-->
+                                        <label class="form-label p-2" for="categories" style="font-family:'Georgia, serif'; color:#2B1A12" >Category</label>
+                                        <select class="form_select" style="color:#2B1A12; background-color:#fff2df; border-color:#C9A24D; font-family:'Georgia, serif'" name="categories" id="categories">
+                                            <option></option>
+                                            <option name="Action">Action</option>
+                                            <option name="Adventure">Adventure</option>
+                                            <option name="Romance">Romance</option>
+                                            <option name="Religion">Religions</option>
+                                            <option name="Horror">Horror</option>
+                                            <option name="Sciences">Sciences</option>
+                                            <option name="History">History</option>
+                                            <option name="Biography">Biography</option>
+                                            <option name="Fantasy">Fantasy</option>
+                                            <option name="SciFi">SciFi</option>
+                                            <option name="Philosophy">SciFi</option>
+                                            <option name="Other">Other</option>
+                                        </select>
+
                                     </form>
                                 </div>
                                 
-                                <button class="btn btn-danger shadow-sm w-75" type="button" id="delete_account">Delete account</button>
+                                <button class="btn shadow-sm w-75" type="button" style="background-color:#8C4F2C; color: F3E7D3; border-color:#C9A24D; font-family:Georgia, serif" id="delete_account">Add</button>
                             </div>
                         </div>
                     </div>
