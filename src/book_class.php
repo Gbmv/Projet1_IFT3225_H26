@@ -15,6 +15,22 @@ class Book
 
     /* Public methods */
 
+
+     // Constructor
+    public function __construct()
+    {
+        /* intializes the global variables to null */
+        $this->title = NULL;
+        $this->author = NULL;
+        $this->category = NULL;
+        $this->book_id = NULL;
+        $this->account_id = NULL;
+        $this->$book_card = NULL;
+    }
+
+    public function __destruct()
+    {}
+
     // Adds a book to the book table, returns book id
     public function addBook(string $title, string $author, string $category): int
     {
@@ -44,7 +60,24 @@ class Book
     }
 
     // Deletes book from user's library
-    public function deleteBook(){}
+    public function deleteBook(string $book_id): bool {
+        // global variables
+        global $pdo;
+        global $dbname;
+
+        // delete book query template
+        $query = 'DELETE FROM `' . $dbname . '`.books WHERE (book_id = :book_id)';
+
+        // values array
+        $values = array(':book_id' => $book_id);
+
+        try {
+            $res = $pdo -> prepare($query);
+            $res->execute($values);
+        } catch(PDOException $e){
+            throw new Exception('Database query error: ' . $e->getMessage());
+        }
+    }
 
 
     // create user's books cards and display them all
@@ -54,7 +87,6 @@ class Book
         global $pdo;
         global $dbname;
 
-        // fazer loop que vai obter cada linha de livros de um usuario de tal id
         $account_id = $this->getAccountIdFromActiveSession();
 
         if (!$account_id) return "No user logged";
