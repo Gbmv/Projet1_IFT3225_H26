@@ -1,8 +1,8 @@
 <?php
-    require './account_class.php';
-    require './db_inc.php';
+    require './src/account_class.php';
+    require './src/db_inc.php';
     // require instead of include, because not having the sanitization methods may compromise security
-    require './sanitization.php'; // will sanitize all input from the form
+    require './src/sanitization.php'; // will sanitize all input from the form
 
     session_start(); // starts session
 
@@ -89,7 +89,7 @@
         <div class="container-fluid">
             <!--logo -->
             <a class="navbar-brand">
-                <img src="../images/logo.png" 
+                <img src="./images/logo.png" 
                 style="width:80px;" class="img-fluid" alt="logo">
             </a>
         </div>
@@ -98,7 +98,7 @@
      <!--Logo-->
     <div class="container mt-5">
         <div class="d-flex flex-column align-items-center mb-4">
-            <img src="../images/logo.png" alt="Logo" width="220" class="img-fluid mb-2">
+            <img src="./images/logo.png" alt="Logo" width="220" class="img-fluid mb-2">
             <h2 class="fw-bold">The Library</h2>
         </div>
     </div>

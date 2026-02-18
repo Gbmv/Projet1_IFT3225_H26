@@ -19,14 +19,6 @@ pagina inicial:
 
 - usar BS filter pra filtrar conteudo dos tuiles
 
-pagina register:
-- ver form validation
-- usar alert pra mostrar que a conta foi criada, depois do usuario inserir infos
-- usar input groups (interessant)
-
-** INTERESSANTES **
-- floating labels
-
 ** Extras se der tempo **
 - Colocar forgot password and forgot email
 

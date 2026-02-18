@@ -20,7 +20,7 @@ class Book
     /* Public methods */
 
 
-     // Constructor
+    // Constructor
     public function __construct(Account $account_obj)
     {
         $this->account = $account_obj;
@@ -34,8 +34,7 @@ class Book
         $this->book_card = NULL;
     }
 
-    public function __destruct()
-    {}
+    public function __destruct() {}
 
     // Adds a book to the book table, returns book id
     public function addBook(string $title, string $author, string $category): int
@@ -65,7 +64,8 @@ class Book
     }
 
     // Deletes book from user's library
-    public function deleteBook(string $book_id) : bool {
+    public function deleteBook(string $book_id): bool
+    {
         // global variables
         global $pdo;
         global $dbname;
@@ -77,11 +77,11 @@ class Book
         $values = array(':book_id' => $book_id);
 
         try {
-            $res = $pdo -> prepare($query);
+            $res = $pdo->prepare($query);
             $res->execute($values);
             echo "<p>Book deleted</p>";
             return true;
-        } catch(PDOException $e){
+        } catch (PDOException $e) {
             throw new Exception('Database query error: ' . $e->getMessage());
         }
         return false;
@@ -101,7 +101,7 @@ class Book
         if (!$account_id) return "No user logged";
 
         $query = 'SELECT title, author, category FROM `' . $dbname . '`.books WHERE account_id = :account_id';
-        $values = array(':account_id'=> $account_id);
+        $values = array(':account_id' => $account_id);
 
         try {
             $res = $pdo->prepare($query);
@@ -109,7 +109,7 @@ class Book
         } catch (PDOException $e) {
             throw new Exception("Database query error: " . $e->getMessage());
         }
-        
+
         $book_cards = "";
 
         // execute loop to display books, while there are books being fetched from current user's book table

@@ -133,7 +133,7 @@ $card = '
                                 <input type="text" id="new_password" placeholder="Enter new password" name="new_password"></input>
                                 <label for="new_password">Choose New Password</label>
                             </div>
-                            
+
                             <button class="btn btn-danger shadow-sm w-75" type="submit" id="modify_account">Modify account</button>
                         </form>
                     </div>
@@ -155,6 +155,8 @@ $card = '
     <div class="container my-5">
         <div class="row g-5 justify-content-center">
             <?php
+
+
             echo $card;
             echo $card;
             echo $card;
@@ -180,7 +182,7 @@ $card = '
                             <div class="modal-body text-center">
                                 <div class="form-floating mb-3 mt-3">
                                     <!--Form contains book title, author and category-->
-                                    <form method="POST" action="">
+                                    <form method="POST" action="add_book.php">
                                         <div class="form-floating mb-3 mt-3">
                                             <input type="title" class="form-control" placeholder="Title" name="title" required>
                                             <label for="title" class="form-label" style="font-family:Georgia, serif">Title</label>
@@ -190,7 +192,7 @@ $card = '
                                             <label for="author" class="form-label" style="font-family:Georgia, serif">Author</label>
                                         </div>
                                         <!--Categories menu-->
-                                        <label class="form-label p-2" for="categories" style="font-family:'Georgia, serif'; color:#2B1A12" >Category</label>
+                                        <label class="form-label p-2" for="categories" style="font-family:'Georgia, serif'; color:#2B1A12">Category</label>
                                         <select class="form_select" style="color:#2B1A12; background-color:#fff2df; border-color:#C9A24D; font-family:'Georgia, serif'" name="categories" id="categories">
                                             <option></option>
                                             <option name="Action">Action</option>
@@ -209,8 +211,8 @@ $card = '
 
                                     </form>
                                 </div>
-                                
-                                <button class="btn shadow-sm w-75" type="button" style="background-color:#8C4F2C; color: F3E7D3; border-color:#C9A24D; font-family:Georgia, serif" id="delete_account">Add</button>
+                                <!--Button : adds book to user's book table by submitting form-->
+                                <button class="btn shadow-sm w-75" type="submit" style="background-color:#8C4F2C; color: F3E7D3; border-color:#C9A24D; font-family:Georgia, serif" id="add_book" data-bs-dismiss="modal">Add</button>
                             </div>
                         </div>
                     </div>
