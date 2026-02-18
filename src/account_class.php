@@ -175,13 +175,13 @@ class Account
         // Editing the account:
 
         // Edit query template //
-        $query = 'UPDATE `'. $dbname .'`.accounts SET account_email = :email, account_pwd = :pwd, account_name = :name WHERE account_id = :id';
+       $query = 'UPDATE `' . $dbname . '`.accounts SET account_email = :email, account_pwd = :pwd, account_name = :name WHERE account_id = :id';
         
         // hashes password
         $hash = password_hash($pwd, PASSWORD_DEFAULT);
       
         // values array 
-        $values = array(':name'=> $name, ':email' => $email, ':pwd' => $hash, ':id' => $id);
+        $values = array(':name'=> $name, ':email' => $email, ':pwd' => $hash , ':id' => $id);
         
         /* Execute the query */
         try
@@ -303,10 +303,11 @@ class Account
         if (session_status() == PHP_SESSION_ACTIVE) {
             // query: looks for current session id in the account_sessions table and make sure session's not older than 7 days 
             $query =
-                'SELECT * FROM ' . $dbname . '.account_sessions, `' . $dbname . '`.accounts WHERE (account_sessions.session_id =:sid)' .
-                'AND (account_sessions.login_time >= (NOW() - INTERVAL 7 DAY)) AND (account_sessions.account_id = accounts.account_id)';
+            'SELECT * FROM `' . $dbname . '`.account_sessions, `' . $dbname . '`.accounts
+            WHERE (account_sessions.session_id = :sid)
+            AND (account_sessions.login_time >= (NOW() - INTERVAL 7 DAY))
+            AND (account_sessions.account_id = accounts.account_id)';
 
-            // values array for pdo
             $values = array(':sid' => session_id());
 
             // executes the query
@@ -412,7 +413,7 @@ class Account
 
         if (session_status() == PHP_SESSION_ACTIVE) {
             // Replace will insert new row with session id if it doesnt exist, or update row with the session id if it exists
-            $query = 'REPLACE INTO `' . $dbname . '` .account_sessions(session_id, account_id, login_time) VALUES (:sid, :accountId, NOW())';
+            $query = 'REPLACE INTO `' . $dbname . '`.account_sessions (session_id, account_id, login_time) VALUES (:sid, :accountId, NOW())';
             $values = array(':sid' => session_id(), ':accountId' => $this->id);
 
             try {

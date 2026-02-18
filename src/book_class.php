@@ -1,7 +1,7 @@
 <?php
 
 include "db_inc.php";
-require "account_class.php";
+require "./account_class.php";
 
 class Book
 {

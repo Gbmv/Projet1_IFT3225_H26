@@ -1,14 +1,11 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 // start the session
 session_start();
 require "db_inc.php";
 require "account_class.php";
-
-
-
-
-
-
 
 
 $error = '';
@@ -27,16 +24,19 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             // 
             $account->sessionLogin();
             //Sucessful login, redirect to home page
-            header('Location: home.php');
+            header('Location: ../home.php');
             exit();
         } else {
             //Login failed, show error message
             $error = 'Invalid email or password';
         }
     } catch (Exception $e) {
-        $error = "Erro no sistema: " . $e->getMessage();
+        $error = "Error in the system " . $e->getMessage();
     }
 }
+
+
+
 ?>
 
 
@@ -78,6 +78,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         <div class= "card shadow m-4" style="width:70%;">
             <div class="card-body p-4">
                 <h2 class="text-center mb-4">Sign in</h2>
+                <?php if ($error !== ''): ?>
+                <div class="alert alert-danger text-center">
+                    <strong>Atenção:</strong> <?php echo $error; ?>
+                </div>
+            <?php endif; ?>
                 <!--Formulaire de connexion-->
                 <form method="POST" action="">
                     <div class="form-floating mb-3" style="width: 100%">
@@ -104,6 +109,13 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             </div>
         </div>
     </div>
+    
+
+    <?php if ($error): ?>
+        <p style="color: red;"><?php echo $error; ?></p>
+    <?php endif; ?>
+
+
     <footer class="footer mt-auto py-4 border-top" style="background-color:#674d3c"><p></p></footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
