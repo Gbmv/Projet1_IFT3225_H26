@@ -26,7 +26,7 @@ class Account
         $this->authenticated = FALSE;
     }
     // Destructor
-    public function __destruct() {}
+    public function __destruct() {} 
 
     // Getter for $id 
     public function getId(): ?string
