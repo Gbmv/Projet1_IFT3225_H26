@@ -3,6 +3,7 @@
 <?php
 
 require "src/db_inc.php";
+require "src/account_class.php";
 require "src/book_class.php";
 
 session_start();
@@ -95,7 +96,10 @@ $card = '
                     </div>
                     <div class="modal-body text-center">
                         <p>You're about to delete this account</p>
-                        <button class="btn btn-danger shadow-sm w-75" type="button" id="delete_account">Delete account</button>
+                        <!--Submits delete account form by pressing the button-->
+                        <form action="src/delete_account.php" method="POST">
+                            <button class="btn btn-danger shadow-sm w-75" type="button" name="delete" id="delete_account">Delete account</button>
+                        </form>
                     </div>
                 </div>
             </div>

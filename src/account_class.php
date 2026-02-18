@@ -175,13 +175,13 @@ class Account
         // Editing the account:
 
         // Edit query template //
-        $query = 'UPDATE `'. $dbname .'`.accounts SET account_email = :email, account_pwd = :pwd, account_name = :name';
+        $query = 'UPDATE `'. $dbname .'`.accounts SET account_email = :email, account_pwd = :pwd, account_name = :name WHERE account_id = :id';
         
         // hashes password
         $hash = password_hash($pwd, PASSWORD_DEFAULT);
       
         // values array 
-        $values = array(':name'=> $name, ':email' => $email, ':pwd' => $hash);
+        $values = array(':name'=> $name, ':email' => $email, ':pwd' => $hash, ':id' => $id);
         
         /* Execute the query */
         try
@@ -303,7 +303,7 @@ class Account
         if (session_status() == PHP_SESSION_ACTIVE) {
             // query: looks for current session id in the account_sessions table and make sure session's not older than 7 days 
             $query =
-                'SELECT * FROM ' . $dbname . '.account_sessions, `' . $dbname . '`.accounts WHERE (account_sessions.session_id =: sid)' .
+                'SELECT * FROM ' . $dbname . '.account_sessions, `' . $dbname . '`.accounts WHERE (account_sessions.session_id =:sid)' .
                 'AND (account_sessions.login_time >= (NOW() - INTERVAL 7 DAY)) AND (account_sessions.account_id = accounts.account_id)';
 
             // values array for pdo
@@ -352,7 +352,7 @@ class Account
         // closes active session, if there's one, removing it form account sessions table
         if (session_status() ==  PHP_SESSION_ACTIVE) {
             // delete query
-            $query = 'DELETE FROM `' . $dbname . '` account_sessions WHERE (session_id = :sid)';
+            $query = 'DELETE FROM `' . $dbname . '`.account_sessions WHERE (session_id = :sid)';
 
             $values = array(':sid' => session_id());
 
@@ -422,5 +422,36 @@ class Account
                     throw new Exception("Database query error: " . $e->getMessage());
             }
         }
+    }
+
+    // Returns account_id from account_sessions table (it will be used inside book's table)
+    public function getAccountIdFromActiveSession(): ?int
+    {
+        global $pdo;
+        global $dbname;
+
+        // initializes the account_id as null, in case is not found
+        $account_id = NULL;
+
+        // retrieves session id
+        $current_session_id = session_id();
+
+        // selects accountId using sessionId
+        $query = 'SELECT account_id FROM `' . $dbname . '`.account_sessions WHERE (session_id = :session_id)';
+        // stores session id into an array (we take it back from db for security purposes)
+        $values = array(':session_id' => $current_session_id);
+
+        // prepares and execute query
+        try {
+            $res = $pdo->prepare($query);
+            $res->execute($values);
+
+            $account_id = $res->fetch(PDO::FETCH_ASSOC);
+            return $account_id['account_id'];
+        } catch (PDOException $e) {
+            throw new Exception("Database query error: " . $e->getMessage());
+        }
+        // returns null if account_id doesnt exist
+        return NULL;
     }
 }

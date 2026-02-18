@@ -1,4 +1,5 @@
 <?php
+
 include "db_inc.php";
 require "account_class.php";
 
@@ -13,19 +14,24 @@ class Book
     private $account_id;
     private $book_card;
 
+    // class will also contain account object so we can access its methods
+    private $account;
+
     /* Public methods */
 
 
      // Constructor
-    public function __construct()
+    public function __construct(Account $account_obj)
     {
+        $this->account = $account_obj;
+
         /* intializes the global variables to null */
         $this->title = NULL;
         $this->author = NULL;
         $this->category = NULL;
         $this->book_id = NULL;
         $this->account_id = NULL;
-        $this->$book_card = NULL;
+        $this->book_card = NULL;
     }
 
     public function __destruct()
@@ -37,17 +43,20 @@ class Book
         global $pdo;
         global $dbname;
 
+        // instantiates account object
+        $account = new Account();
+
         // trims strings to remove extra spaces
         $title = trim($title);
         $author = trim($author);
 
         // retrieves account id from current session, stores it into account_id
-        $account_id = $this->getAccountIdFromActiveSession();
+        $account_id = $account->getAccountIdFromActiveSession();
 
         // creates insert query
         $query = 'INSERT INTO `' . $dbname . '`.books(title, author, category, account_id) VALUES (:title, :author, :category, :account_id)';
 
-        $values = array(':title' => $title, ':author' => $author, 'category' => $category, 'account_id' => $account_id);
+        $values = array(':title' => $title, ':author' => $author, ':category' => $category, 'account_id' => $account_id);
 
         try {
             $res = $pdo->prepare($query);
@@ -60,7 +69,7 @@ class Book
     }
 
     // Deletes book from user's library
-    public function deleteBook(string $book_id): bool {
+    public function deleteBook(string $book_id) : bool {
         // global variables
         global $pdo;
         global $dbname;
@@ -74,9 +83,12 @@ class Book
         try {
             $res = $pdo -> prepare($query);
             $res->execute($values);
+            echo "<p>Book deleted</p>";
+            return true;
         } catch(PDOException $e){
             throw new Exception('Database query error: ' . $e->getMessage());
         }
+        return false;
     }
 
 
@@ -127,36 +139,5 @@ EOT;
         }
 
         return $book_cards;
-    }
-
-    // Returns account_id from account_sessions table (it will be used inside book's table)
-    public function getAccountIdFromActiveSession(): ?int
-    {
-        global $pdo;
-        global $dbname;
-
-        // initializes the account_id as null, in case is not found
-        $account_id = NULL;
-
-        // retrieves session id
-        $current_session_id = session_id();
-
-        // selects accountId using sessionId
-        $query = 'SELECT account_id FROM `' . $dbname . '`.account_sessions WHERE (session_id = :session_id)';
-        // stores session id into an array (we take it back from db for security purposes)
-        $values = array(':session_id' => $current_session_id);
-
-        // prepares and execute query
-        try {
-            $res = $pdo->prepare($query);
-            $res->execute($values);
-
-            $account_id = $res->fetch(PDO::FETCH_ASSOC);
-            return $account_id['account_id'];
-        } catch (PDOException $e) {
-            throw new Exception("Database query error: " . $e->getMessage());
-        }
-        // returns null if account_id doesnt exist
-        return NULL;
     }
 }
