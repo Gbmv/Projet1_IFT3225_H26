@@ -97,8 +97,8 @@ $card = '
                     <div class="modal-body text-center">
                         <p>You're about to delete this account</p>
                         <!--Submits delete account form by pressing the button-->
-                        <form action="src/delete_account.php" method="POST">
-                            <button class="btn btn-danger shadow-sm w-75" type="button" name="delete" id="delete_account">Delete account</button>
+                        <form action="./src/delete_account.php" method="POST">
+                            <button class="btn btn-danger shadow-sm w-75" type="submit" name="delete" id="delete_account">Delete account</button>
                         </form>
                     </div>
                 </div>
@@ -113,12 +113,29 @@ $card = '
                 <!--Modal-->
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title alert alert-danger">Attention!</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body text-center">
-                        <p>You're about to delete this account</p>
-                        <button class="btn btn-danger shadow-sm w-75" type="button" id="delete_account">Delete account</button>
+                        <h6>Edit Account</h6>
+                        <form>
+                            <!-- New name -->
+                            <div class="form-floating mb-3">
+                                <input type="text" id="new_name" placeholder="Enter new name" name="new_name"></input>
+                                <label for="new_name">Choose New Name</label>
+                            </div>
+                            <!-- New email -->
+                            <div class="form-floating mb-3">
+                                <input type="text" id="new_email" placeholder="Enter new email" name="new_email"></input>
+                                <label for="new_email">Choose New Email</label>
+                            </div>
+                            <!-- New password -->
+                            <div class="form-floating mb-3">
+                                <input type="text" id="new_password" placeholder="Enter new password" name="new_password"></input>
+                                <label for="new_password">Choose New Password</label>
+                            </div>
+                            
+                            <button class="btn btn-danger shadow-sm w-75" type="submit" id="modify_account">Modify account</button>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -4,9 +4,8 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 // start the session
 session_start();
-require "db_inc.php";
-require "account_class.php";
-
+require "src/db_inc.php";
+require "src/account_class.php";
 
 $error = '';
 
@@ -24,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             // 
             $account->sessionLogin();
             //Sucessful login, redirect to home page
-            header('Location: ../home.php');
+            header('Location: ./home.php');
             exit();
         } else {
             //Login failed, show error message
@@ -59,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         <div class="container-fluid">
             <!--logo -->
             <a class="navbar-brand">
-                <img src="../images/logo.png"
+                <img src="./images/logo.png"
                     style="width:80px;" class="img-fluid" alt="logo">
             </a>
         </div>
@@ -68,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     <!--Logo-->
     <div class="container mt-5">
         <div class="d-flex flex-column align-items-center mb-4">
-            <img src="../images/logo.png" alt="Logo" width="300" class="img-fluid mb-2">
+            <img src="./images/logo.png" alt="Logo" width="300" class="img-fluid mb-2">
             <h2 class="fw-bold">The Library</h2>
         </div>
     </div>
@@ -101,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
 
                     <div class="text-center m-3">
-                        <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover mb-3" role="button" href="./register.php">Don't have an account? Click here to register</a>
+                        <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover mb-3" role="button" href="./src/register.php">Don't have an account? Click here to register</a>
                     </div>
 
 

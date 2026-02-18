@@ -1,7 +1,7 @@
 <?php
 
-include "db_inc.php";
-require "./account_class.php";
+include_once "db_inc.php";
+require_once "account_class.php";
 
 class Book
 {
@@ -40,18 +40,14 @@ class Book
     // Adds a book to the book table, returns book id
     public function addBook(string $title, string $author, string $category): int
     {
-        global $pdo;
-        global $dbname;
-
-        // instantiates account object
-        $account = new Account();
+        global $pdo, $dbname;
 
         // trims strings to remove extra spaces
         $title = trim($title);
         $author = trim($author);
 
         // retrieves account id from current session, stores it into account_id
-        $account_id = $account->getAccountIdFromActiveSession();
+        $account_id = $this->account->getAccountIdFromActiveSession();
 
         // creates insert query
         $query = 'INSERT INTO `' . $dbname . '`.books(title, author, category, account_id) VALUES (:title, :author, :category, :account_id)';
@@ -99,7 +95,8 @@ class Book
         global $pdo;
         global $dbname;
 
-        $account_id = $this->getAccountIdFromActiveSession();
+        // retrives account id from active session
+        $account_id = $this->account->getAccountIdFromActiveSession();
 
         if (!$account_id) return "No user logged";
 

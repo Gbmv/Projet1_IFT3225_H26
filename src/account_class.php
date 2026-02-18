@@ -98,7 +98,7 @@ class Account
     }
 
     /* Deletes an account (selection by ID) */
-    public function deleteAccount(string $id): bool
+    public function deleteAccount(int $id): bool
     {
         global $pdo;
         global $dbname;
@@ -448,7 +448,11 @@ class Account
             $res->execute($values);
 
             $account_id = $res->fetch(PDO::FETCH_ASSOC);
-            return $account_id['account_id'];
+
+            // verifies if fetch brought a line before accessing array
+            if ($account_id && isset($account_id['account_id'])){
+                return (int)$account_id['account_id'];
+            }
         } catch (PDOException $e) {
             throw new Exception("Database query error: " . $e->getMessage());
         }

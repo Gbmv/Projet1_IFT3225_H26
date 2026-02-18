@@ -63,8 +63,8 @@
         // Try to add the account
         $account->addAccount($email, $password, $name);
 
-        // If successful, redirect to login page 
-        header("Location: login.php?success=1"); 
+        // If successful, redirect to index (login) page 
+        header("Location: ./index.php"); 
         exit(); 
     // If there is an error, catch it and display the message
     } catch(Exception $e){
@@ -98,7 +98,7 @@
      <!--Logo-->
     <div class="container mt-5">
         <div class="d-flex flex-column align-items-center mb-4">
-            <img src="../images/logo.png" alt="Logo" width="220" class="img-fluid mb-2" style="">
+            <img src="../images/logo.png" alt="Logo" width="220" class="img-fluid mb-2">
             <h2 class="fw-bold">The Library</h2>
         </div>
     </div>
@@ -135,7 +135,7 @@
 
                 <!-- Redirects user to login page, if they have an existing account -->
                 <div class="text-center m-3">
-                    <a class="mb-3" role="button" href="login.php">Already have an account? Click here</a>
+                    <a class="mb-3" role="button" href="./index.php">Already have an account? Click here</a>
                 </div>
             </form>
             </div>
