@@ -57,36 +57,21 @@
     /** AFTER sanitizing it, use account methods to manipulate the data into the accounts table **/
 
     if ($valid == true){
-    // instantiates account class, all values are set null at first
-        try {
-            $account = new Account();
+    try {
+        $account = new Account();
 
-            // adds new account to the accounts table with the submitted form data. stores account's id inside id
-            $account->addAccount($email, $password, $name);
+        // Try to add the account
+        $account->addAccount($email, $password, $name);
 
-            
-            $success = '<script>console.log("New account created.")</script>';
-
-            // gives feedback to user, indicating account was successfully created and pointing to login page
-            $success_feedback = 
-            '<div class="alert alert-sucess fade-in" role="alert">
-                <strong>Great news!</strong>
-                <br>
-                Your account has been just created, ' . $name . '.
-                <br>
-                <a href="src/login.php" class="alert-link">Sign in</a>
-            </div>';
-
-            // after account is created and added to the table, sends user back to login page to login into his account
-            /* if ($account) {
-                header("Location:/login.php");
-            } */
-        } catch(Exception $e){
-            //
-            $msgErr = '<div class="alert alert-danger">' . $e->getMessage() . '</div>';
-            die();
-        } 
-    }
+        // If successful, redirect to login page 
+        header("Location: login.php?success=1"); 
+        exit(); 
+    // If there is an error, catch it and display the message
+    } catch(Exception $e){
+        $msgErr = '<div class="alert alert-danger">' . $e->getMessage() . '</div>';
+        
+    } 
+}
 ?>
 
 <!DOCTYPE html>
