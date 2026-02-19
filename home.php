@@ -16,6 +16,11 @@ require_once(__DIR__ . '/src/book_class.php');
 session_start();    
 
 $account = new Account();
+// If user doesn't have an active session, redirects to login page
+ if (!$account->sessionLogin()) {
+                header('Location: src/login.php');
+                exit;
+            }
 $book = new Book($account);
 
 
@@ -56,6 +61,12 @@ $book = new Book($account);
                     alt="user adjusts icon"
                     style="width:40px">
             </button>
+            
+            <div  style="color:#C9A24D">
+                <p>Name: <?php echo htmlspecialchars($account->getName() ?? ''); ?>!</p>
+                <p>Email: <?php echo htmlspecialchars($account->getEmail() ?? ''); ?>!</p>
+            </div>
+
             <!-- navbar features div-->
             <div class="collapse navbar-collapse navbar navbar-dark" id="collapsibleNavbar">
                 <ul class="navbar-nav" style="color:#C9A24D">
@@ -128,19 +139,7 @@ $book = new Book($account);
     <div class="container my-5">
         <div class="row g-5 justify-content-center">
             <?php
-
-
-            $account = new Account();
-            $book = new Book($account);
-            // // Test of an imaginary book, to see if the cards are well displayed.
-          
-            // // Crets the book teste
-            // $bookObj->addBook("Book Teste", "Author Test", "Fantasy");
-
-            // We call the displayBooks function to display all the books of the user in the form of cards
             echo $book->displayBooks();
-           
-
             ?>
 
             <!--Tile button: creates a new book card-->
