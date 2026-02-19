@@ -333,7 +333,7 @@ class Account
         return FALSE;
     }
 
-    // Logs out current user
+    // Logs out current user --> I don't think it's necessary this class
     public function logout()
     {
 

@@ -17,9 +17,7 @@
                 ';
                 header('Location: ');
             }
-            
-
-
+        
         } catch(PDOException $e){
             throw new Exception("Database error: " . $e->getMessage());
         }

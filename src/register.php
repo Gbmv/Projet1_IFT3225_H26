@@ -1,8 +1,8 @@
 <?php
-    require './account_class.php';
-    require './db_inc.php';
+    require 'account_class.php';
+    require 'db_inc.php';
     // require instead of include, because not having the sanitization methods may compromise security
-    require './sanitization.php'; // will sanitize all input from the form
+    require 'sanitization.php'; // will sanitize all input from the form
 
     session_start(); // starts session
 

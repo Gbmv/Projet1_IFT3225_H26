@@ -2,30 +2,21 @@
 
 <?php
 
-require "src/db_inc.php";
-require "src/account_class.php";
-require "src/book_class.php";
+//Debbugging: displays all errors and warnings
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-session_start();
+// __DIR__ returns the absolute path of the current file's directory.
+require_once(__DIR__ . '/src/db_inc.php');
+require_once(__DIR__ . '/src/account_class.php');
+require_once(__DIR__ . '/src/book_class.php');
 
-$card = '
-<div class="col-12 col-md-3">
-                        <div class="card h-100" style="background-color:#5A3422;">
-                            <div class="card-header text-center">
-                                <h4 style="color:#C9A24D; font-family:Georgia, serif;"> title </h4>
-                            </div>
-                            <img class="card-img-top" src="./images/book_bg_2.png" alt="Card image">
-                            <div class="card-body">
-                                <p style="color: #F3E7D3"> book </p>
-                                <h6 class="text-center"> category </h6>
-                            </div>
-                            <div class="card-footer" style="border-top-color:#8C4F2C">
-                                <button class="btn" type="button">
-                                    <img src="./images/delete_icon.svg" class="img-fluid" style="width:30px;" alt="remove">
-                                </button>
-                            </div>  
-                        </div>
-                    </div>'
+
+session_start();    
+
+$account = new Account();
+$book = new Book($account);
 
 
 
@@ -69,11 +60,10 @@ $card = '
             <div class="collapse navbar-collapse navbar navbar-dark" id="collapsibleNavbar">
                 <ul class="navbar-nav" style="color:#C9A24D">
                     <li class="nav-item">
-                        <a class="nav-link" href="logout.php">Logout</a>
+                        <a class="nav-link" href="src/logout.php">Logout</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="edit_account.php">Modify Account</a>
-
+                        <a class="nav-link" href="src/edit_account.php">Modify Account</a>
                     </li>
                     <li class="nav-item">
                         <!-- Triggers modal to confirm if user wants to delete their account-->
@@ -138,9 +128,19 @@ $card = '
     <div class="container my-5">
         <div class="row g-5 justify-content-center">
             <?php
-            echo $card;
-            echo $card;
-            echo $card;
+
+
+            $account = new Account();
+            $book = new Book($account);
+            // // Test of an imaginary book, to see if the cards are well displayed.
+          
+            // // Crets the book teste
+            // $bookObj->addBook("Book Teste", "Author Test", "Fantasy");
+
+            // We call the displayBooks function to display all the books of the user in the form of cards
+            echo $book->displayBooks();
+           
+
             ?>
 
             <!--Tile button: creates a new book card-->
@@ -186,7 +186,7 @@ $card = '
                                             <option name="Biography">Biography</option>
                                             <option name="Fantasy">Fantasy</option>
                                             <option name="SciFi">SciFi</option>
-                                            <option name="Philosophy">SciFi</option>
+                                            <option name="Philosophy">Philosophy</option>
                                             <option name="Other">Other</option>
                                         </select>
 

@@ -1,7 +1,11 @@
 <?php
 
 include "db_inc.php";
-require "./account_class.php";
+
+// Require once to not include the same file multiple times, which may cause errors when using 
+// two classes that both require the same file, for example, account_class.php and book_class.php
+//  both require account_class.php, so we use require_once to avoid including it twice and causing errors
+require_once "account_class.php";
 
 class Book
 {
@@ -51,7 +55,7 @@ class Book
         $author = trim($author);
 
         // retrieves account id from current session, stores it into account_id
-        $account_id = $account->getAccountIdFromActiveSession();
+        $account_id = $this->account->getAccountIdFromActiveSession();
 
         // creates insert query
         $query = 'INSERT INTO `' . $dbname . '`.books(title, author, category, account_id) VALUES (:title, :author, :category, :account_id)';
@@ -99,11 +103,11 @@ class Book
         global $pdo;
         global $dbname;
 
-        $account_id = $this->getAccountIdFromActiveSession();
+        $account_id = $this->account->getAccountIdFromActiveSession();
 
         if (!$account_id) return "No user logged";
 
-        $query = 'SELECT title, author, category FROM `' . $dbname . '`.books WHERE account_id = :account_id';
+        $query = 'SELECT book_id, title, author, category FROM `' . $dbname . '`.books WHERE account_id = :account_id';
         $values = array(':account_id'=> $account_id);
 
         try {
@@ -129,9 +133,12 @@ class Book
                                 <h6 class="text-center"> {$book['category']} </h6>
                             </div>
                             <div class="card-footer" style="border-top-color:#8C4F2C">
-                                <button class="btn" type="button">
-                                    <img src="./images/delete_icon.svg" class="img-fluid" style="width:30px;" alt="remove">
-                                </button>
+                               <form method = "POST" action = "src/delete_book.php">
+                                    <input type="hidden" name="book_id" value="{$book['book_id']}">
+                                    <button class="btn" type="submit">
+                                        <img src="./images/delete_icon.svg" class="img-fluid" style="width:30px;" alt="remove">
+                                    </button>
+                                </form>
                             </div>  
                         </div>
                     </div>
