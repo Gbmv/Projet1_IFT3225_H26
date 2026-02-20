@@ -2,9 +2,10 @@
 
 <?php
 
-require "src/db_inc.php";
-require "src/account_class.php";
-require "src/book_class.php";
+require "./src/db_inc.php";
+require "./src/account_class.php";
+require "./src/book_class.php";
+require "./src/sanitization.php";
 
 session_start();
 
@@ -25,9 +26,66 @@ $card = '
                                 </button>
                             </div>  
                         </div>
-                    </div>'
+                    </div>';
 
+/* Adding books logic */
+// 1 sanitize data
+$titleErr = $authorErr = $categoryErr = $msgErr = $success = $success_feedback = "";
 
+// define variables and set values to empty
+$title = $author = $category = ""; // define variables and set to empty values
+$newId = 0;
+$valid = false;
+// sanitization of the data from the form
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // checks for input name errors, sends error message if so
+    if (empty($_POST["title"])) {
+        $titleErr = '<div class="alert alert-danger" role="alert">Title required</div>';
+        $valid = false;
+    } else {
+        // cleans and capitalizes title input
+        $title = clean($_POST["title"]);
+        $tile = ucwords($title);
+        $valid = true;
+    }
+
+    // checks for input email errors, sends error message if so
+    if (empty($_POST["author"])) {
+        $authorErr = '<div class="alert alert-danger" role="alert">Author required</div>';
+        $valid = false;
+    } else {
+        // cleans and capitalizes author input
+        $author = clean($_POST["author"]);
+        $author = ucwords($author);
+        $valid = true;
+    }
+    // checks if password was typed at all, sends error msg if not
+    if (empty($_POST["categories"])) {
+        $categoryErr = '<div class="alert alert-danger" role="alert">Category required</div>';
+        $valid = false;
+    } else {
+        // cleans and capitalizes category input
+        $category = clean($_POST["categories"]);
+        $valid = true;
+    }
+}
+
+/** AFTER sanitizing it, adds book to the books table*/
+if ($valid == true) {
+    try {
+        $current_account = new Account;
+        // instatiates new book object with account as an argument
+        $book = new Book($current_account);
+        // Try to add the book to the user's book table
+        $book->addBook($title, $author, $category);
+
+        // If successful, displays new book in the book tiles grid
+
+        // If there is an error, catch it and display the message
+    } catch (Exception $e) {
+        $msgErr = '<div class="alert alert-danger">' . $e->getMessage() . '</div>';
+    }
+}
 
 ?>
 
@@ -155,11 +213,15 @@ $card = '
     <div class="container my-5">
         <div class="row g-5 justify-content-center">
             <?php
+            // instantiates Account objet
+            $account = new Account;
+            $account_id = $account->getAccountIdFromActiveSession();
 
+            // instatiate Book object
+            $book = new Book($account);
 
-            echo $card;
-            echo $card;
-            echo $card;
+            // displays user's books inside tiles
+            echo $book->displayBooks();
             ?>
 
             <!--Tile button: creates a new book card-->
@@ -182,7 +244,7 @@ $card = '
                             <div class="modal-body text-center">
                                 <div class="form-floating mb-3 mt-3">
                                     <!--Form contains book title, author and category-->
-                                    <form method="POST" action="add_book.php">
+                                    <form method="POST" action="">
                                         <div class="form-floating mb-3 mt-3">
                                             <input type="title" class="form-control" placeholder="Title" name="title" required>
                                             <label for="title" class="form-label" style="font-family:Georgia, serif">Title</label>
@@ -195,24 +257,28 @@ $card = '
                                         <label class="form-label p-2" for="categories" style="font-family:'Georgia, serif'; color:#2B1A12">Category</label>
                                         <select class="form_select" style="color:#2B1A12; background-color:#fff2df; border-color:#C9A24D; font-family:'Georgia, serif'" name="categories" id="categories">
                                             <option></option>
-                                            <option name="Action">Action</option>
-                                            <option name="Adventure">Adventure</option>
-                                            <option name="Romance">Romance</option>
-                                            <option name="Religion">Religions</option>
-                                            <option name="Horror">Horror</option>
-                                            <option name="Sciences">Sciences</option>
-                                            <option name="History">History</option>
-                                            <option name="Biography">Biography</option>
-                                            <option name="Fantasy">Fantasy</option>
-                                            <option name="SciFi">SciFi</option>
-                                            <option name="Philosophy">SciFi</option>
-                                            <option name="Other">Other</option>
+                                            <option value="Action">Action</option>
+                                            <option value="Adventure">Adventure</option>
+                                            <option value="Romance">Romance</option>
+                                            <option value="Religion">Religions</option>
+                                            <option value="Horror">Horror</option>
+                                            <option value="Sciences">Sciences</option>
+                                            <option value="History">History</option>
+                                            <option value="Biography">Biography</option>
+                                            <option value="Fantasy">Fantasy</option>
+                                            <option value="SciFi">SciFi</option>
+                                            <option value="Philosophy">SciFi</option>
+                                            <option value="Other">Other</option>
                                         </select>
-
+                                        <!--Button : adds book to user's book table by submitting form-->
+                                        <button class="btn shadow-sm w-75" type="submit" style="background-color:#8C4F2C; color: F3E7D3; border-color:#C9A24D; font-family:Georgia, serif" id="add_book" data-bs-dismiss="modal">Add</button>
                                     </form>
                                 </div>
-                                <!--Button : adds book to user's book table by submitting form-->
-                                <button class="btn shadow-sm w-75" type="submit" style="background-color:#8C4F2C; color: F3E7D3; border-color:#C9A24D; font-family:Georgia, serif" id="add_book" data-bs-dismiss="modal">Add</button>
+                                <?php
+                                echo $titleErr;
+                                echo $authorErr;
+                                echo $categoryErr;
+                                ?>
                             </div>
                         </div>
                     </div>

@@ -45,13 +45,14 @@ class Book
         $title = trim($title);
         $author = trim($author);
 
-        // retrieves account id from current session, stores it into account_id
-        $account_id = $this->account->getAccountIdFromActiveSession();
+        //
+        $account = $this->account;
+        $account_id = $account->getAccountIdFromActiveSession();
 
         // creates insert query
         $query = 'INSERT INTO `' . $dbname . '`.books(title, author, category, account_id) VALUES (:title, :author, :category, :account_id)';
 
-        $values = array(':title' => $title, ':author' => $author, ':category' => $category, 'account_id' => $account_id);
+        $values = array(':title' => $title, ':author' => $author, ':category' => $category, ':account_id' => $account_id);
 
         try {
             $res = $pdo->prepare($query);

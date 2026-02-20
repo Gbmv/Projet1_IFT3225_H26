@@ -14,7 +14,6 @@
     $valid = false;
 
     
-
     // sanitization of the data from the form
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // checks for input name errors, sends error message if so
