@@ -45,7 +45,7 @@ class Book
         $title = trim($title);
         $author = trim($author);
 
-        //
+        // retrieves account id from current session, stores it into account_id
         $account = $this->account;
         $account_id = $account->getAccountIdFromActiveSession();
 
@@ -127,9 +127,12 @@ class Book
                                 <h6 class="text-center"> {$book['category']} </h6>
                             </div>
                             <div class="card-footer" style="border-top-color:#8C4F2C">
-                                <button class="btn" type="button">
-                                    <img src="./images/delete_icon.svg" class="img-fluid" style="width:30px;" alt="remove">
-                                </button>
+                               <form method = "POST" action = "src/delete_book.php">
+                                    <input type="hidden" name="book_id" value="{$book['book_id']}">
+                                    <button class="btn" type="submit">
+                                        <img src="./images/delete_icon.svg" class="img-fluid" style="width:30px;" alt="remove">
+                                    </button>
+                                </form>
                             </div>  
                         </div>
                     </div>

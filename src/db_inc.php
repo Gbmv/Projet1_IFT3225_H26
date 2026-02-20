@@ -2,7 +2,7 @@
     $servername = "localhost";
     $username = "root";
     $dbname = "tp1-ift3225";
-    $password = "";
+    $password = "root";
 
     // PDO object
     $pdo = NULL;

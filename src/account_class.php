@@ -34,6 +34,12 @@ class Account
         return $this->id;
     }
 
+    /* Getter for $name */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
     /* Getter for $email */
     public function getEmail(): ?string
     {
@@ -321,11 +327,11 @@ class Account
             $row = $res->fetch(PDO::FETCH_ASSOC);
 
             if (is_array($row)) {
-                // retrieves accounts name, id and authenticates it
+                // retrieves accounts name,email, id and authenticates it
                 $this->id = intval($row['account_id'], 10);
                 $this->name = $row['account_name'];
+                $this->email = $row['account_email'];
                 $this->authenticated = TRUE;
-
                 return TRUE;
             }
         }
@@ -333,7 +339,7 @@ class Account
         return FALSE;
     }
 
-    // Logs out current user
+    // Logs out current user --> I don't think it's necessary this class
     public function logout()
     {
 
