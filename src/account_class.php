@@ -309,8 +309,7 @@ class Account
         if (session_status() == PHP_SESSION_ACTIVE) {
             // query: looks for current session id in the account_sessions table and make sure session's not older than 7 days 
             $query =
-            'SELECT * FROM `' . $dbname . '`.account_sessions, `' . $dbname . '`.accounts
-            WHERE (account_sessions.session_id = :sid)
+            'SELECT * FROM `' . $dbname . '`.account_sessions, `' . $dbname . '`.accounts WHERE (account_sessions.session_id = :sid)
             AND (account_sessions.login_time >= (NOW() - INTERVAL 7 DAY))
             AND (account_sessions.account_id = accounts.account_id)';
 

@@ -11,6 +11,14 @@ error_reporting(E_ALL);
 require_once(__DIR__ . '/src/db_inc.php');
 require_once(__DIR__ . '/src/account_class.php');
 require_once(__DIR__ . '/src/book_class.php');
+require_once(__DIR__ . '/src/sanitization.php');
+
+
+session_start();
+
+// instantiates account and logs into it
+$current_account = new Account;
+$current_account->sessionLogin();
 
 /* Adding books logic */
 // first sanitize data
@@ -29,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         // cleans and capitalizes title input
         $title = clean($_POST["title"]);
-        $tile = ucwords($title);
+        $title = ucwords($title);
         $valid = true;
     }
 
@@ -57,7 +65,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 /** AFTER sanitizing it, adds book to the books table*/
 if ($valid == true) {
     try {
-        $current_account = new Account;
         // instatiates new book object with account as an argument
         $book = new Book($current_account);
         // Try to add the book to the user's book table
@@ -95,6 +102,10 @@ if ($valid == true) {
                     style="width:80px;" class="img-fluid" alt="logo">
             </a>
 
+            <div class="nav-item me-auto" style="color:#C9A24D">
+                <p>Hey, <?php echo htmlspecialchars($current_account->getName() ?? ''); ?>!</p>
+                <p><?php echo htmlspecialchars($current_account->getEmail() ?? ''); ?>!</p>
+            </div>
             <!-- toggler button shows/hides navbar features-->
             <button
                 class="navbar-toggler"
@@ -107,11 +118,9 @@ if ($valid == true) {
                     alt="user adjusts icon"
                     style="width:40px">
             </button>
-            
-            <div  style="color:#C9A24D">
-                <p>Name: <?php echo htmlspecialchars($account->getName() ?? ''); ?>!</p>
-                <p>Email: <?php echo htmlspecialchars($account->getEmail() ?? ''); ?>!</p>
-            </div>
+
+
+
 
             <!-- navbar features div-->
             <div class="collapse navbar-collapse navbar navbar-dark" id="collapsibleNavbar">
@@ -206,7 +215,7 @@ if ($valid == true) {
             $account = new Account;
             $account_id = $account->getAccountIdFromActiveSession();
 
-            // instatiate Book object
+            // instatiates Book object
             $book = new Book($account);
 
             // displays user's books inside tiles

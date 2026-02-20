@@ -101,7 +101,7 @@ class Book
 
         if (!$account_id) return "No user logged";
 
-        $query = 'SELECT title, author, category FROM `' . $dbname . '`.books WHERE account_id = :account_id';
+        $query = 'SELECT book_id, title, author, category FROM `' . $dbname . '`.books WHERE account_id = :account_id';
         $values = array(':account_id' => $account_id);
 
         try {
@@ -124,7 +124,7 @@ class Book
                             <img class="card-img-top" src="./images/book_bg_2.png" alt="Card image">
                             <div class="card-body">
                                 <p style="color: #F3E7D3"> {$book['author']} </p>
-                                <h6 class="text-center"> {$book['category']} </h6>
+                                <h6 class="text-center" style="color:#C9A24D"> {$book['category']} </h6>
                             </div>
                             <div class="card-footer" style="border-top-color:#8C4F2C">
                                <form method = "POST" action = "src/delete_book.php">
