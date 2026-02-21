@@ -4,6 +4,7 @@
     $dbname = "tp1-ift3225";
     $password = "";
 
+
     // PDO object
     $pdo = NULL;
 
@@ -21,4 +22,10 @@
         die();
     }
 
-// connection string 
+    ;
+
+    // makes sure base_url is not declared twice
+    if (!defined('BASE_URL')) {
+   // grabs root path from project 
+    define('BASE_URL', `/Projet1_IFT3225_H26/`);
+}

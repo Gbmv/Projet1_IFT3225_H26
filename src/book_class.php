@@ -90,28 +90,37 @@ class Book
 
 
     // create user's books cards and display them all
-    public function displayBooks()
+    public function displayBooks(int $page = 1)
     {
         // global variables
         global $pdo;
         global $dbname;
+
+        // pagination configuration
+        $limit = 15;
+        $offset = ($page - 1) * $limit;
+        $total_results = 0;
 
         // retrives account id from active session
         $account_id = $this->account->getAccountIdFromActiveSession();
 
         if (!$account_id) return "No user logged";
 
-        $query = 'SELECT book_id, title, author, category FROM `' . $dbname . '`.books WHERE account_id = :account_id';
-        $values = array(':account_id' => $account_id);
+        $query = 'SELECT book_id, title, author, category FROM `' . $dbname . '`.books WHERE account_id = :account_id LIMIT :limit OFFSET :offset';
 
         try {
+            // bindvalue grants that limit and offset being treated as integer
             $res = $pdo->prepare($query);
-            $res->execute($values);
+            $res -> bindValue(':account_id', $account_id, PDO::PARAM_INT);
+            $res -> bindValue(':limit', $limit, PDO::PARAM_INT);
+            $res -> bindValue(':offset', $offset, PDO::PARAM_INT);
+            $res->execute();
         } catch (PDOException $e) {
             throw new Exception("Database query error: " . $e->getMessage());
         }
 
         $book_cards = "";
+
 
         // execute loop to display books, while there are books being fetched from current user's book table
         while ($book = $res->fetch(PDO::FETCH_ASSOC)) {
@@ -121,7 +130,7 @@ class Book
                             <div class="card-header text-center">
                                 <h4 style="color:#C9A24D; font-family:Georgia, serif;"> {$book['title']} </h4>
                             </div>
-                            <img class="card-img-top" src="./images/book_bg_2.png" alt="Card image">
+                            <img class="card-img-top" src=".\images\book_bg_2.png" alt="Card image">
                             <div class="card-body">
                                 <p style="color: #F3E7D3"> {$book['author']} </p>
                                 <h6 class="text-center" style="color:#C9A24D"> {$book['category']} </h6>

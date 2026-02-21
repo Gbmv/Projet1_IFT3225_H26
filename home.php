@@ -98,13 +98,13 @@ if ($valid == true) {
         <div class="container-fluid">
             <!--logo -->
             <a class="navbar-brand">
-                <img src="images/logo.png"
+                <img src="<?php echo BASE_URL; ?>images/logo.png"
                     style="width:80px;" class="img-fluid" alt="logo">
             </a>
 
             <div class="nav-item me-auto" style="color:#C9A24D">
                 <p>Hey, <?php echo htmlspecialchars($current_account->getName() ?? ''); ?>!</p>
-                <p><?php echo htmlspecialchars($current_account->getEmail() ?? ''); ?>!</p>
+                <p><?php echo htmlspecialchars($current_account->getEmail() ?? ''); ?></p>
             </div>
             <!-- toggler button shows/hides navbar features-->
             <button
@@ -114,12 +114,10 @@ if ($valid == true) {
                 data-bs-toggle="collapse"
                 data-bs-target="#collapsibleNavbar">
 
-                <img src="images/person-gear.svg" class="img-fluid"
+                <img src="<?php echo BASE_URL; ?>images/person-gear.svg" class="img-fluid"
                     alt="user adjusts icon"
                     style="width:40px">
             </button>
-
-
 
 
             <!-- navbar features div-->
@@ -202,7 +200,7 @@ if ($valid == true) {
     <!--Logo-->
     <div class="container mt-5">
         <div class="d-flex flex-column align-items-center mb-4">
-            <img src="images/logo.png" alt="Logo" width="200" class="img-fluid mb-2">
+            <img src="<?php echo BASE_URL; ?>images/logo.png" alt="Logo" width="200" class="img-fluid mb-2">
             <h2 class="fw-bold" style="font-family:Georgia, sans">The Library</h2>
         </div>
     </div>
@@ -212,21 +210,26 @@ if ($valid == true) {
         <div class="row g-5 justify-content-center">
             <?php
             // instantiates Account objet
-            $account = new Account;
-            $account_id = $account->getAccountIdFromActiveSession();
+            //$account = new Account;
+            $account_id = $current_account->getAccountIdFromActiveSession();
 
+            // gets current page, if there's no defined page, defaults to 1
+            $present_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
+            if ($present_page < 1) $present_page = 1;
+            
             // instatiates Book object
-            $book = new Book($account);
+            $book = new Book($current_account);
 
             // displays user's books inside tiles
-            echo $book->displayBooks();
+            echo $book->displayBooks($present_page);
             ?>
 
             <!--Tile button: creates a new book card-->
             <div class="col-12 col-md-3 d-grid justify-content-center">
                 <!--Clicking the button will activate a modal containing the form-->
                 <button class="btn p-0 border-0 bg-transparent" type="button" data-bs-toggle="modal" data-bs-target="#add_book">
-                    <img class="card-img img-fluid" style="width:70%" src="./images/plus_button2.png">
+                    <img class="card-img img-fluid" style="width:70%" src="<?php echo BASE_URL ?>images/plus_button2.png">
                 </button>
             </div>
 
@@ -289,12 +292,25 @@ if ($valid == true) {
     <!-- pagination -->
     <div class="container">
         <ul class="pagination mx-auto justify-content-center" style="width:fit-content;">
-            <li class="page-item"><a class="page-link" style="background-color:#2B1A12; color:#C9A24D; border-color:#C9A24D !important" href="#">Previous</a></li>
-            <li class="page-item"><a class="page-link" style="background-color:#2B1A12; color:#C9A24D; border-color:#C9A24D !important" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" style="background-color:#2B1A12; color:#C9A24D; border-color:#C9A24D !important" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" style="background-color:#2B1A12; color:#C9A24D; border-color:#C9A24D !important" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" style="background-color:#2B1A12; color:#C9A24D; border-color:#C9A24D !important" href="#">Next</a></li>
-        </ul>
+            <li class="page-item"><a class="page-link" style="
+            <?php if ($_GET["page"] ==  1){
+                echo "background-color:#C9A24D; color:#2B1A12; border-color: #2B1A12";}
+                else {
+                    echo "background-color:#2B1A12; color:#C9A24D; border-color:#C9A24D";
+                    }?> !important" href="?page=1">1</a></li>
+            <li class="page-item"><a class="page-link" style="
+            <?php if ($_GET["page"] ==  2){
+                echo "background-color:#C9A24D; color:#2B1A12; border-color: #2B1A12";}
+                else {
+                    echo "background-color:#2B1A12; color:#C9A24D; border-color:#C9A24D";
+                    }?> !important" href="?page=2">2</a></li>
+            <li class="page-item"><a class="page-link" style="
+            <?php if ($_GET["page"] ==  3){
+                echo "background-color:#C9A24D; color:#2B1A12; border-color: #2B1A12";}
+                else {
+                    echo "background-color:#2B1A12; color:#C9A24D; border-color:#C9A24D";
+                    }?> !important" href="?page=3">3</a></li>
+            </ul>
     </div>
 
 
