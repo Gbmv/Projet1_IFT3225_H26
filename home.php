@@ -249,7 +249,8 @@ if ($valid == true) {
                                             <option value="Biography">Biography</option>
                                             <option value="Fantasy">Fantasy</option>
                                             <option value="SciFi">SciFi</option>
-                                            <option value="Philosophy">SciFi</option>
+                                            <option value="Philosophy">Philosophy</option>
+                                            <option value="Sports">Sports</option>
                                             <option value="Other">Other</option>
                                         </select>
                                         <!--Button : adds book to user's book table by submitting form-->
@@ -274,22 +275,21 @@ if ($valid == true) {
     <div class="container">
         <ul class="pagination mx-auto justify-content-center" style="width:fit-content;">
             <?php
-            // makes sure we have a page number to be compared
-            $current_p = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 
             // creates an array to the pages 1 to 5 (could be more, but for thiss project, will be 5)
             for ($i = 1; $i <= 5; $i++):
+                $is_first = ($i == 1);
                 // colors logic, if its the current page, highlights hte page number
-                $bg = ($current_p == $i) ? "#C9A24D" : "#2B1A12";
-                $color = ($current_p == $i) ? "#2B1A12" : "#C9A24D";
-                $border = ($current_p == $i) ? "#2B1A12" : "#C9A24D";
+                $bg = $is_first ? "#C9A24D" : "#2B1A12";
+                $color = $is_first ? "#2B1A12" : "#C9A24D";
+                $border = $is_first ? "#2B1A12" : "#C9A24D";
             ?>
             <li class="page-item">
-                <a class="page-link"
+                <button class="page-link"
                     style="background-color:<?php echo $bg; ?>; color:<?php echo $color; ?>; border-color:<?php echo $border; ?> !important;"
-                    href="?page=<?php echo $i; ?>">
+                    onclick="loadPage(<?php echo $i; ?>)">
                     <?php echo $i; ?>
-                </a>
+                </button>
             </li>
             <?php endfor; ?>
         </ul>
@@ -314,7 +314,7 @@ if ($valid == true) {
         // loads pages
         function loadPage(pageNumber) {
             // fetch will go to the php file without reloading the page
-            fetch(<?php echo BASE_URL ?> 'get_books.php?page=' + pageNumber)
+            fetch('<?php echo BASE_URL;?>get_books.php?page=' + pageNumber)
                 .then(response => {
                     if (!response.ok) throw new Error('Page not found');
                     return response.text();
@@ -324,11 +324,38 @@ if ($valid == true) {
                     const container = document.getElementById('books_grid');
                     // adds html inside of it (the books grid we created in displayBooks)
                     container.innerHTML = html;
+
+                    // updates pagination
+                    updateColorsPagination(pageNumber);
+                    // changes page number in the url without refreshing the webiste
+                    let newUrl= '?page=' + pageNumber;
+                    window.history.pushState(null,"", newUrl);
+
+                    //makes page roll to top of the books grid
+                    window.scrollTo(0, 200);
                 })
                 .catch(error => {
                     console.error('Loading : ', error)
                     document.getElementById('books_grid').innerHTML = "Error loading books";
                 });
+        }
+
+        // highlights current page in pagination
+        function updateColorsPagination(activePage){
+            //selects all pagination buttons
+            buttons = document.querySelectorAll('.pagination .page-link');
+            
+            // verifies if button corresponds to active page, if so, highlights it
+            buttons.forEach((btn, index) => {
+                const n = index+1;
+                if (n == activePage){
+                    btn.style.backgroundColor="#C9A24D";
+                    btn.style.color = "#2B1A12";
+                } else {
+                    btn.style.backgroundColor = "#2B1A12";
+                    btn.style.color = "#C9A24D";
+                }
+            });
         }
     </script>
 </body>

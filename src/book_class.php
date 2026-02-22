@@ -133,47 +133,28 @@ class Book
 
             $book_cards .= <<<EOT
                 <div class="col-12 col-md-3">
-                        <div class="card h-100" style="background-color:#5A3422;">
-
-                            <div class="card-header text-center">
-                                <h4 style="color:#C9A24D; font-family:Georgia, serif;"> {$book['title']} </h4>
-                            </div>
-
-                            <img class="card-img-top" src=".\images\book_bg_2.png" alt="Card image">
-
-                            <div class="card-body">
-                                <p style="color: #F3E7D3"> {$book['author']} </p>
-                                <h6 class="text-center" style="color:#C9A24D"> {$book['category']} </h6>
-                            </div>
-
-                            <div class="card-footer d-flex justify-content-between align-items-center" style="border-top-color:#8C4F2C">
-                            <!-- EDIT button (goes to edit page) -->
-                                <a class="btn" href="src/edit_book.php?book_id={$bookId}">
-                                    <img src="./images/pencil.svg" class="img-fluid" style="width:30px;" alt="edit">
-                                </a>
-
-                               <form method = "POST" action = "src/delete_book.php">
-                                    <input type="hidden" name="book_id" value="{$book['book_id']}">
-                                    <button class="btn" type="submit">
-                                        <img src="./images/delete_icon.svg" class="img-fluid" style="width:30px;" alt="remove">
-                                    </button>
-                                </form>
-                                
-                            </div>  
+                    <div class="card h-100" style="background-color:#5A3422;">
+                        <div class="card-header text-center">
+                            <h4 style="color:#C9A24D; font-family:Georgia, serif;"> {$book['title']} </h4>
                         </div>
-                        <img class="card-img-top" src="./images/book_bg_2.png" alt="Card image">
+                        <img class="card-img-top" src=".\images\book_bg_2.png" alt="Card image">
                         <div class="card-body">
                             <p style="color: #F3E7D3"> {$book['author']} </p>
                             <h6 class="text-center" style="color:#C9A24D"> {$book['category']} </h6>
                         </div>
-                        <div class="card-footer" style="border-top-color:#8C4F2C">
+                        <div class="card-footer d-flex justify-content-between align-items-center" style="border-top-color:#8C4F2C">
+                            <!-- EDIT button (goes to edit page) -->
+                                <a class="btn" href="src/edit_book.php?book_id={$bookId}">
+                                    <img src="./images/golden_pencil.svg" class="img-fluid" style="width:25px;" alt="edit">
+                                </a>
                             <form method = "POST" action = "src/delete_book.php">
                                 <input type="hidden" name="book_id" value="{$book['book_id']}">
                                 <button class="btn" type="submit">
-                                    <img src="./images/delete_icon.svg" class="img-fluid" style="width:30px;" alt="remove">
-                                </button>
-                            </form>
-                        </div>  
+                                        <img src="./images/delete_icon.svg" class="img-fluid" style="width:30px;" alt="remove">
+                                    </button>
+                                </form> 
+                            </div>  
+                        </div>
                     </div>
                 </div>
 EOT;
@@ -186,11 +167,13 @@ EOT;
                 <button class="btn p-0 border-0 bg-transparent" type="button" data-bs-toggle="modal" data-bs-target="#add_book">
                     <img class="card-img img-fluid" style="width:70%" src="./images/plus_button2.png">
                 </button>
-            </div>;
+            </div>
 EOT;
 
         return $book_cards . $add_button;
     }
+
+
     // Updates a book (only if it belongs to the logged user)
     public function editBook(int $book_id, string $title, string $author, string $category): bool
     {
@@ -236,4 +219,3 @@ EOT;
         }
     }
 }
-// teste

@@ -2,7 +2,7 @@
     $servername = "localhost";
     $username = "root";
     $dbname = "tp1-ift3225";
-    $password = "root";
+    $password = "";
 
     
     // PDO object
@@ -22,7 +22,7 @@
         die();
     }
 
-    
+
 
     // makes sure base_url is not declared twice
     if (!defined('BASE_URL')) {
