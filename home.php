@@ -213,6 +213,7 @@ if ($valid == true) {
             <div class="row g-5 justify-content-center" id="books_grid"></div>
 
 
+           
             <!-- Modal: Add a book -->
             <div class="container">
                 <div class="modal fade" role="dialog" id="add_book">

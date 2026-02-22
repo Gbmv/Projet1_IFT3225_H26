@@ -124,11 +124,42 @@ class Book
 
         // execute loop to display books, while there are books being fetched from current user's book table
         while ($book = $res->fetch(PDO::FETCH_ASSOC)) {
+
+            $bookId = (int)$book['book_id'];
+            $title = htmlspecialchars($book['title'] ?? '');
+            $author = htmlspecialchars($book['author'] ?? '');
+            $category = htmlspecialchars($book['category'] ?? '');
+
+
             $book_cards .= <<<EOT
                 <div class="col-12 col-md-3">
-                    <div class="card h-100" style="background-color:#5A3422;">
-                        <div class="card-header text-center">
-                            <h4 style="color:#C9A24D; font-family:Georgia, serif;"> {$book['title']} </h4>
+                        <div class="card h-100" style="background-color:#5A3422;">
+
+                            <div class="card-header text-center">
+                                <h4 style="color:#C9A24D; font-family:Georgia, serif;"> {$book['title']} </h4>
+                            </div>
+
+                            <img class="card-img-top" src=".\images\book_bg_2.png" alt="Card image">
+
+                            <div class="card-body">
+                                <p style="color: #F3E7D3"> {$book['author']} </p>
+                                <h6 class="text-center" style="color:#C9A24D"> {$book['category']} </h6>
+                            </div>
+
+                            <div class="card-footer d-flex justify-content-between align-items-center" style="border-top-color:#8C4F2C">
+                            <!-- EDIT button (goes to edit page) -->
+                                <a class="btn" href="src/edit_book.php?book_id={$bookId}">
+                                    <img src="./images/pencil.svg" class="img-fluid" style="width:30px;" alt="edit">
+                                </a>
+
+                               <form method = "POST" action = "src/delete_book.php">
+                                    <input type="hidden" name="book_id" value="{$book['book_id']}">
+                                    <button class="btn" type="submit">
+                                        <img src="./images/delete_icon.svg" class="img-fluid" style="width:30px;" alt="remove">
+                                    </button>
+                                </form>
+                                
+                            </div>  
                         </div>
                         <img class="card-img-top" src="./images/book_bg_2.png" alt="Card image">
                         <div class="card-body">
@@ -159,6 +190,50 @@ EOT;
 EOT;
 
         return $book_cards . $add_button;
+    }
+    // Updates a book (only if it belongs to the logged user)
+    public function editBook(int $book_id, string $title, string $author, string $category): bool
+    {
+        global $pdo, $dbname;
+
+        // trims strings to remove extra spaces
+        $title = trim($title);
+        $author = trim($author);
+        $category = trim($category);
+
+        // retrieves account id from current session
+        $account_id = (int)$this->account->getAccountIdFromActiveSession();
+        if (!$account_id) {
+            throw new Exception("No user logged.");
+        }
+
+        if ($book_id <= 0) {
+            throw new Exception("Invalid book id.");
+        }
+
+        // Update ONLY if this book belongs to this account
+        $query = 'UPDATE `' . $dbname . '`.books
+                SET title = :title, author = :author, category = :category
+                WHERE book_id = :book_id AND account_id = :account_id';
+
+        $values = array(
+            ':title' => $title,
+            ':author' => $author,
+            ':category' => $category,
+            ':book_id' => $book_id,
+            ':account_id' => $account_id
+        );
+
+        try {
+            $res = $pdo->prepare($query);
+            $res->execute($values);
+
+            // rowCount(): 1 se atualizou, 0 se não achou (ou dados iguais)
+            return ($res->rowCount() > 0);
+
+        } catch (PDOException $e) {
+            throw new Exception("Database query error: " . $e->getMessage());
+        }
     }
 }
 // teste
