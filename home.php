@@ -233,6 +233,7 @@ if ($valid == true) {
                 </button>
             </div>
 
+           
             <!-- Modal: Add a book -->
             <div class="container">
                 <div class="modal fade" role="dialog" id="add_book">
