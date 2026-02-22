@@ -22,7 +22,7 @@
         die();
     }
 
-    ;
+    
 
     // makes sure base_url is not declared twice
     if (!defined('BASE_URL')) {

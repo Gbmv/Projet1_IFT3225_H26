@@ -126,29 +126,39 @@ class Book
         while ($book = $res->fetch(PDO::FETCH_ASSOC)) {
             $book_cards .= <<<EOT
                 <div class="col-12 col-md-3">
-                        <div class="card h-100" style="background-color:#5A3422;">
-                            <div class="card-header text-center">
-                                <h4 style="color:#C9A24D; font-family:Georgia, serif;"> {$book['title']} </h4>
-                            </div>
-                            <img class="card-img-top" src=".\images\book_bg_2.png" alt="Card image">
-                            <div class="card-body">
-                                <p style="color: #F3E7D3"> {$book['author']} </p>
-                                <h6 class="text-center" style="color:#C9A24D"> {$book['category']} </h6>
-                            </div>
-                            <div class="card-footer" style="border-top-color:#8C4F2C">
-                               <form method = "POST" action = "src/delete_book.php">
-                                    <input type="hidden" name="book_id" value="{$book['book_id']}">
-                                    <button class="btn" type="submit">
-                                        <img src="./images/delete_icon.svg" class="img-fluid" style="width:30px;" alt="remove">
-                                    </button>
-                                </form>
-                            </div>  
+                    <div class="card h-100" style="background-color:#5A3422;">
+                        <div class="card-header text-center">
+                            <h4 style="color:#C9A24D; font-family:Georgia, serif;"> {$book['title']} </h4>
                         </div>
+                        <img class="card-img-top" src="./images/book_bg_2.png" alt="Card image">
+                        <div class="card-body">
+                            <p style="color: #F3E7D3"> {$book['author']} </p>
+                            <h6 class="text-center" style="color:#C9A24D"> {$book['category']} </h6>
+                        </div>
+                        <div class="card-footer" style="border-top-color:#8C4F2C">
+                            <form method = "POST" action = "src/delete_book.php">
+                                <input type="hidden" name="book_id" value="{$book['book_id']}">
+                                <button class="btn" type="submit">
+                                    <img src="./images/delete_icon.svg" class="img-fluid" style="width:30px;" alt="remove">
+                                </button>
+                            </form>
+                        </div>  
                     </div>
+                </div>
 EOT;
         }
 
-        return $book_cards;
+        $add_button = <<<EOT
+            <!--Tile button: creates a new book card-->
+            <div class="col-12 col-md-3 d-grid justify-content-center">
+                <!--Clicking the button will activate a modal containing the form-->
+                <button class="btn p-0 border-0 bg-transparent" type="button" data-bs-toggle="modal" data-bs-target="#add_book">
+                    <img class="card-img img-fluid" style="width:70%" src="./images/plus_button2.png">
+                </button>
+            </div>;
+EOT;
+
+        return $book_cards . $add_button;
     }
 }
 // teste

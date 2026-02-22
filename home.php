@@ -208,30 +208,10 @@ if ($valid == true) {
     <!-- Library: Grid of book tiles -->
     <div class="container my-5">
         <div class="row g-5 justify-content-center">
-            <?php
-            // instantiates Account objet
-            //$account = new Account;
-            $account_id = $current_account->getAccountIdFromActiveSession();
 
-            // gets current page, if there's no defined page, defaults to 1
-            $present_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            <!-- Contains all books from book's table that was fetched from db AND add book button-->
+            <div class="row g-5 justify-content-center" id="books_grid"></div>
 
-            if ($present_page < 1) $present_page = 1;
-            
-            // instatiates Book object
-            $book = new Book($current_account);
-
-            // displays user's books inside tiles
-            echo $book->displayBooks($present_page);
-            ?>
-
-            <!--Tile button: creates a new book card-->
-            <div class="col-12 col-md-3 d-grid justify-content-center">
-                <!--Clicking the button will activate a modal containing the form-->
-                <button class="btn p-0 border-0 bg-transparent" type="button" data-bs-toggle="modal" data-bs-target="#add_book">
-                    <img class="card-img img-fluid" style="width:70%" src="<?php echo BASE_URL ?>images/plus_button2.png">
-                </button>
-            </div>
 
             <!-- Modal: Add a book -->
             <div class="container">
@@ -292,25 +272,26 @@ if ($valid == true) {
     <!-- pagination -->
     <div class="container">
         <ul class="pagination mx-auto justify-content-center" style="width:fit-content;">
-            <li class="page-item"><a class="page-link" style="
-            <?php if ($_GET["page"] ==  1){
-                echo "background-color:#C9A24D; color:#2B1A12; border-color: #2B1A12";}
-                else {
-                    echo "background-color:#2B1A12; color:#C9A24D; border-color:#C9A24D";
-                    }?> !important" href="?page=1">1</a></li>
-            <li class="page-item"><a class="page-link" style="
-            <?php if ($_GET["page"] ==  2){
-                echo "background-color:#C9A24D; color:#2B1A12; border-color: #2B1A12";}
-                else {
-                    echo "background-color:#2B1A12; color:#C9A24D; border-color:#C9A24D";
-                    }?> !important" href="?page=2">2</a></li>
-            <li class="page-item"><a class="page-link" style="
-            <?php if ($_GET["page"] ==  3){
-                echo "background-color:#C9A24D; color:#2B1A12; border-color: #2B1A12";}
-                else {
-                    echo "background-color:#2B1A12; color:#C9A24D; border-color:#C9A24D";
-                    }?> !important" href="?page=3">3</a></li>
-            </ul>
+            <?php
+            // makes sure we have a page number to be compared
+            $current_p = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+
+            // creates an array to the pages 1 to 5 (could be more, but for thiss project, will be 5)
+            for ($i = 1; $i <= 5; $i++):
+                // colors logic, if its the current page, highlights hte page number
+                $bg = ($current_p == $i) ? "#C9A24D" : "#2B1A12";
+                $color = ($current_p == $i) ? "#2B1A12" : "#C9A24D";
+                $border = ($current_p == $i) ? "#2B1A12" : "#C9A24D";
+            ?>
+            <li class="page-item">
+                <a class="page-link"
+                    style="background-color:<?php echo $bg; ?>; color:<?php echo $color; ?>; border-color:<?php echo $border; ?> !important;"
+                    href="?page=<?php echo $i; ?>">
+                    <?php echo $i; ?>
+                </a>
+            </li>
+            <?php endfor; ?>
+        </ul>
     </div>
 
 
@@ -321,6 +302,33 @@ if ($valid == true) {
 
     <!--Bootstrap js-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+    </script>
+    <script>
+        // fetch runs since page is opened
+        document.addEventListener("DOMContentLoaded", function() {
+            //calls first page automatically    
+            loadPage(1);
+        })
+
+        // loads pages
+        function loadPage(pageNumber) {
+            // fetch will go to the php file without reloading the page
+            fetch(<?php echo BASE_URL ?> 'get_books.php?page=' + pageNumber)
+                .then(response => {
+                    if (!response.ok) throw new Error('Page not found');
+                    return response.text();
+                })
+                .then(html => {
+                    // retrieves books_grid container
+                    const container = document.getElementById('books_grid');
+                    // adds html inside of it (the books grid we created in displayBooks)
+                    container.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Loading : ', error)
+                    document.getElementById('books_grid').innerHTML = "Error loading books";
+                });
+        }
     </script>
 </body>
 
