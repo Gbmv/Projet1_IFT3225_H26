@@ -22,8 +22,8 @@ The system is built using PHP and MySQL and runs locally with MAMP.
 
 ## Team Members
 
-* **[Your Full Name]**
-* **Caio [Last Name]**
+* **Gabriel Viana**
+* **Caio Torres**
 
 ### Task Distribution
 
