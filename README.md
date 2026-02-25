@@ -1,5 +1,5 @@
 # Projet1_IFT3225_H26
-Perfeito — aqui está a versão **limpa em Markdown**, pronta para copiar e colar diretamente no seu `README.md` no GitHub.
+
 
 ---
 
